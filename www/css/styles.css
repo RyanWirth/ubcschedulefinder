@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+
+body {
+    background-color:#F8F8F8;
+    font-family: Montserrat, sans-serif;
+    margin:0;
+    padding:0;
+}
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+div.ui-header {
+    background-color:#039BE5;
+    color:#DDD;
+    font-weight:100;
+    min-height:80px;
+    width:100%;
+    box-shadow:0px 0px 16px #666;
+}
+
+div.ui-header div.ui-header-left {
+    float:left;
+}
+
+div.ui-header div.ui-header-right {
+    float:right;
+}
+
+div.ui-header div.ui-header-logo {
+    color:#FFF;
+    cursor:pointer;
+    font-size:18px;
+    height:80px;
+    line-height:80px;
+    margin-left:20px;
+    position:relative;
+    text-align:center;
+}
+
+div.ui-header div.ui-header-logo i {
+    float:left;
+    margin-top:20px;
+    margin-right:10px;
+}
+
+div.ui-header div.ui-header-button {
+    cursor:pointer;
+    float:left;
+    font-size:14px;
+    height:80px;
+    line-height:80px;
+    padding:0px 20px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+div.ui-header div.ui-header-button:hover, 
+div.ui-header div.ui-header-button-active {
+    color:#FFF;
+}

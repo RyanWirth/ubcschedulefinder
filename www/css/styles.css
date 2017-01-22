@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
 
 body {
-    background-color:#F8F8F8;
+    color:#DDD;
+    background-color:#E9E9E9;
     font-family: Montserrat, sans-serif;
     margin:0;
     padding:0;
@@ -14,11 +15,10 @@ body {
 
 div.ui-header {
     background-color:#039BE5;
-    color:#DDD;
-    font-weight:100;
+    box-shadow:0px 0px 16px #333;
+    font-weight:400;
     min-height:80px;
     width:100%;
-    box-shadow:0px 0px 16px #666;
 }
 
 div.ui-header div.ui-header-left {
@@ -27,12 +27,14 @@ div.ui-header div.ui-header-left {
 
 div.ui-header div.ui-header-right {
     float:right;
+    padding-right:10px;
 }
 
 div.ui-header div.ui-header-logo {
     color:#FFF;
-    cursor:pointer;
+    cursor:default;
     font-size:18px;
+    font-weight:700;
     height:80px;
     line-height:80px;
     margin-left:20px;
@@ -60,4 +62,152 @@ div.ui-header div.ui-header-button {
 div.ui-header div.ui-header-button:hover, 
 div.ui-header div.ui-header-button-active {
     color:#FFF;
+}
+
+div.ui-content {
+    display:block;
+    margin:10px;
+}
+
+div.ui-content div.ui-content-text {
+    color:#363636;
+    cursor:default;
+    font-size:14px;
+    padding:10px;
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header {
+    font-size:32px;
+    font-weight:700;
+}
+
+div.ui-content div.ui-content-text form input[type=text] {
+    width:130px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+div.ui-content div.ui-content-text form input[type=text]:focus {
+    width:100%;
+}
+
+div.ui-content div.ui-divider {
+    height:1px;
+    background-color:#BCBCBC;
+    border-bottom:1px solid #FFF;
+    margin:10px;
+}
+
+
+/** Main data table styles **/
+table {
+    background-color:#E1E1E1;
+    border-collapse: separate;
+    border-radius:6px;
+    border-spacing: 0px;
+    width:100%;
+}
+
+table thead {
+    background-color:#03A9F4;
+    color:#F8F8F8;
+    font-size:16px;
+}
+
+table thead th {
+    padding:10px;
+}
+
+table tr td {
+    padding:10px;
+    text-align:center;
+}
+
+table tbody tr {
+    cursor:pointer;
+}
+
+table tr.odd {
+    background-color:#E9E9E9;
+}
+
+table tbody tr:hover {
+    background-color:#039BE5;
+    color:#F8F8F8;
+}
+
+/* top-left border-radius */
+table tr:first-child th:first-child {
+  border-top-left-radius: 6px;
+}
+
+/* top-right border-radius */
+table tr:first-child th:last-child {
+  border-top-right-radius: 6px;
+}
+
+/* bottom-left border-radius */
+table tfoot tr:last-child td:first-child {
+  border-bottom-left-radius: 6px;
+}
+
+/* bottom-right border-radius */
+table tfoot tr:last-child td:last-child {
+  border-bottom-right-radius: 6px;
+}
+
+table tfoot {
+    font-weight:700;
+}
+
+
+/** Footer and progress bar styles **/
+div.ui-footer {
+    background-color:#4F4F4F;
+    bottom:0;
+    height:80px;
+    position:absolute;
+    width:100%;
+}
+
+div.ui-footer div.ui-footer-progress-bar {
+    border-radius:20px;
+    background-color:#363636;
+    height:40px;
+    margin:20px;
+    position:relative;
+    width:calc(100% - 40px);
+    z-index:1;
+}
+
+div.ui-footer div.ui-footer-progress-bar div.ui-footer-start-generation {
+    cursor:pointer;
+    width:100%;
+    text-align: center;
+    height:40px;
+    line-height:40px;
+    position:absolute;
+    text-transform: uppercase;
+}
+
+div.ui-footer div.ui-footer-progress-bar div.ui-footer-start-generation:hover {
+    color:#FFF;
+}
+
+div.ui-footer div.ui-footer-progress-bar > span {
+    display:block;
+    height:40px;
+    border-radius:20px;
+    background-color:#039BE5;
+    position: absolute;
+    overflow: hidden;
+    z-index:0;
+}
+
+div.ui-footer div.ui-footer-progress-bar > span div.ui-footer-progress-bar-status {
+    color:#01579B;
+    float:right;
+    font-size:20px;
+    line-height:40px;
+    margin-right:14px;
 }

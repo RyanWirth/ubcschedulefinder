@@ -17,7 +17,7 @@ div.ui-modal {
     position:absolute;
     width:100%;
     height:100%;
-    z-index:1;
+    z-index:2;
 }
 
 div.ui-modal div.ui-modal-window {
@@ -35,7 +35,7 @@ div.ui-modal div.ui-modal-window {
     top:50%;
     transform: translate(-50%, -50%);
     max-width:680px;
-    min-width:300px;
+    min-width:540px;
     width:66%;
     z-index:2;
 }
@@ -176,6 +176,7 @@ table {
     border-radius:6px;
     border-spacing: 0px;
     color:#363636;
+    font-size:14px;
     width:100%;
 }
 

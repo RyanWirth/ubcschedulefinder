@@ -1,0 +1,32 @@
+table {
+    font-size:12px;
+}
+
+table thead {
+    font-size:14px;
+}
+
+table thead th {
+    padding:6px;
+}
+
+table tr td {
+    padding:6px;
+}
+
+/** For really small screens **/
+@media (max-width: 600px) {
+    
+    div.ui-modal div.ui-modal-window {
+        width:90%;
+        min-width:0;
+    }
+    
+    div.ui-header div.ui-header-logo {
+        font-size:14px;
+    }
+    
+    div.ui-header div.ui-header-button {
+        padding:0 10px;
+    }
+}

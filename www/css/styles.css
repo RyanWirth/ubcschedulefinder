@@ -13,6 +13,76 @@ body {
 .material-icons.md-36 { font-size: 36px; }
 .material-icons.md-48 { font-size: 48px; }
 
+div.ui-modal {
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:1;
+}
+
+div.ui-modal div.ui-modal-window {
+    background-color:#E9E9E9;
+    border-radius:6px;
+    box-shadow:0px 4px 32px #363636;
+    cursor:default;
+    max-height:calc(100vh - 210px);
+    min-height:360px;
+    left:50%;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:10px;
+    position:absolute;
+    top:50%;
+    transform: translate(-50%, -50%);
+    max-width:680px;
+    min-width:300px;
+    width:66%;
+    z-index:2;
+}
+
+/** Scrollbar styles for the modal window **/
+div.ui-modal-window::-webkit-scrollbar {
+    width: 6px;
+    height:6px;
+}
+ 
+div.ui-modal-window::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius:3px;
+}
+
+div.ui-modal div.ui-modal-window div.ui-modal-window-header {
+    color:#363636;
+    height:36px;
+    margin-bottom:10px;
+}
+
+div.ui-modal div.ui-modal-window div.ui-modal-window-header div.ui-modal-window-header-title {
+    float:left;
+    font-size:24px;
+    font-weight:700;
+    line-height: 36px;
+    margin-left:8px;
+}
+
+div.ui-modal div.ui-modal-window div.ui-modal-window-header div.ui-modal-window-header-close {
+    cursor:pointer;
+    float:right;
+    height:36px;
+}
+
+div.ui-modal table input[type=checkbox] {
+    width:18px;
+    height:16px;
+}
+
+div.ui-modal div.ui-modal-tint {
+    background-color:#363636;
+    height:100%;
+    opacity: 0.5;
+    width:100%;
+}
+
 div.ui-header {
     background-color:#039BE5;
     box-shadow:0px 0px 16px #333;
@@ -105,6 +175,7 @@ table {
     border-collapse: separate;
     border-radius:6px;
     border-spacing: 0px;
+    color:#363636;
     width:100%;
 }
 
@@ -123,7 +194,7 @@ table tr td {
     text-align:center;
 }
 
-table tbody tr {
+table.selectable tbody tr {
     cursor:pointer;
 }
 
@@ -131,7 +202,7 @@ table tr.odd {
     background-color:#E9E9E9;
 }
 
-table tbody tr:hover {
+table.selectable tbody tr:hover {
     background-color:#039BE5;
     color:#F8F8F8;
 }

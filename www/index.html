@@ -12,6 +12,74 @@
         <link rel="stylesheet" href="css/styles.css" />
     </head>
     <body>
+        <div class="ui-modal">
+            <div class="ui-modal-window">
+                <div class="ui-modal-window-header">
+                    <div class="ui-modal-window-header-title">CPSC 210</div>
+                    <div class="ui-modal-window-header-close"><i class="material-icons md-36">close</i></div>
+                </div>
+                <div class="ui-modal-window-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Status</th>
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Term</th>
+                                <th>Days</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input checked type="checkbox" /></td>
+                                <td></td>
+                                <td>101</td>
+                                <td>Lecture</td>
+                                <td>1</td>
+                                <td>Mon Wed Fri</td>
+                                <td>11:00</td>
+                                <td>12:00</td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" /></td>
+                                <td>Full</td>
+                                <td>102</td>
+                                <td>Lecture</td>
+                                <td>1</td>
+                                <td>Mon Wed Fri</td>
+                                <td>14:00</td>
+                                <td>15:00</td>
+                            </tr>
+                            <tr>
+                                <td><input checked type="checkbox" /></td>
+                                <td></td>
+                                <td>201</td>
+                                <td>Lecture</td>
+                                <td>2</td>
+                                <td>Mon Wed Fri</td>
+                                <td>11:00</td>
+                                <td>12:00</td>
+                            </tr>
+                            <tr>
+                                <td><input checked type="checkbox" /></td>
+                                <td></td>
+                                <td>202</td>
+                                <td>Lecture</td>
+                                <td>2</td>
+                                <td>Mon Wed Fri</td>
+                                <td>09:00</td>
+                                <td>10:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="ui-modal-tint"></div>
+        </div>
+        
         <div class="ui-header">
             <div class="ui-header-left">
                 <div class="ui-header-logo">
@@ -32,7 +100,7 @@
             <div class="ui-divider"></div>
             
             <div class="ui-content-text">
-                <table>
+                <table class="selectable">
                     <thead>
                         <tr>
                             <th>ID</th>

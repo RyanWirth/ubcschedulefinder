@@ -14,9 +14,11 @@ body {
 .material-icons.md-48 { font-size: 48px; }
 
 div.ui-modal {
+    opacity:0;
     position:absolute;
     width:100%;
     height:100%;
+    visibility: hidden;
     z-index:2;
 }
 
@@ -25,9 +27,10 @@ div.ui-modal div.ui-modal-window {
     border-radius:6px;
     box-shadow:0px 4px 32px #363636;
     cursor:default;
-    max-height:calc(100vh - 210px);
-    min-height:360px;
     left:50%;
+    max-height:calc(100vh - 210px);
+    max-width:680px;
+    min-width:540px;
     overflow-y:auto;
     overflow-x:hidden;
     padding:10px;
@@ -149,17 +152,126 @@ div.ui-content div.ui-content-text {
 div.ui-content div.ui-content-text div.ui-content-text-header {
     font-size:32px;
     font-weight:700;
+    margin-bottom:5px;
+    position:relative;
 }
 
-div.ui-content div.ui-content-text form input[type=text] {
-    width:130px;
-    -webkit-transition: width 0.4s ease-in-out;
-    transition: width 0.4s ease-in-out;
+div.ui-content div.ui-content-text div.ui-content-text-header-left {
+    display:inline-block;
 }
 
-div.ui-content div.ui-content-text form input[type=text]:focus {
+/** Search input styles **/
+div.ui-content div.ui-content-text div.ui-content-text-header-right {
+    display:inline-block;
+    width:300px;
+    vertical-align: middle;
+    position:absolute;
+    right:0;
+    font-size:14px;
+}
+
+div.ui-content div.ui-content-text input.ui-content-text-header-search {
     width:100%;
+    min-width:160px;
+    height:40px;
+    padding-left:40px;
+    margin-left:-40px;
+    float:left;
+    color:#363636;
+    outline:none;
+    border:1px solid #BCBCBC;
+    border-radius:5px;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    background-color:#F8F8F8;
+    font-family:Montserrat, sans-serif;
 }
+
+div.ui-content div.ui-content-text input.ui-content-text-header-search:hover,
+div.ui-content div.ui-content-text input.ui-content-text-header-search:active,
+div.ui-content div.ui-content-text input.ui-content-text-header-search:focus {
+    background-color:#FFF;
+    border:none;
+    margin-top:1px;
+    margin-left:-39px;
+    box-shadow:0px 0px 2px 1px #039BE5;
+}
+
+div.ui-content div.ui-content-text input.ui-content-text-header-search::-webkit-input-placeholder {
+   color: #BCBCBC;
+}
+ 
+div.ui-content div.ui-content-text input.ui-content-text-header-search:-moz-placeholder { /* Firefox 18- */
+   color: #363636;  
+}
+ 
+div.ui-content div.ui-content-text input.ui-content-text-header-search::-moz-placeholder {  /* Firefox 19+ */
+   color: #363636;  
+}
+ 
+div.ui-content div.ui-content-text input.ui-content-text-header-search:-ms-input-placeholder {  
+   color: #363636;  
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header-right i {
+    position:absolute;
+    padding-top:10px;
+    padding-left:12px;
+    margin-left:-40px;
+    z-index:1;
+    color:#BCBCBC;
+}
+
+div.ui-content div.ui-content-text input.ui-content-text-header-search:focus + ul.search-results,
+div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results:active {
+    display: block;
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results {
+    display:none;
+    position: absolute;
+    color:#363636;
+    top: 35px;
+    left: 0;
+    right: 0;
+    z-index: 0;
+    padding: 0;
+    font-weight:400;
+    margin-left:-40px;
+    border-width: 1px;
+    overflow:hidden;
+    border-radius:5px;
+    border:1px solid #BCBCBC;
+    background-color: #f8f8f8;
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li {
+    cursor:pointer;
+    list-style: none;
+    padding:10px;
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li:first-child:before {
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+    border-bottom: 5px outset transparent;
+    border-color:#FF6600;
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li:hover {
+    color:#F8F8F8;
+    background-color:#363636;
+}
+
+div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li span {
+    font-size:12px;
+}
+
 
 div.ui-content div.ui-divider {
     height:1px;

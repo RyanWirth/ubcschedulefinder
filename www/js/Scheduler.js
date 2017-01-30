@@ -242,4 +242,91 @@ var Generator = (function() {
     
 })();
 
-Scheduler.addCourses(["CPSC-210", "MATH-200"]);
+//Scheduler.addCourses(["CPSC-210", "MATH-200"]);
+
+$(function() {
+    // Load the departments
+    UBCCalendarAPI.getDepartments(function(){});
+    
+    $("#course-list tbody tr").click(showCourseModalWindow);
+    $("#course .ui-modal-window-header-close").click(hideCourseModalWindow);
+    
+    $(".ui-content-text-header-search").bind("input", searchInputChanged);
+    $(".ui-content-text-header-search").focusin(searchInputChanged);
+});
+
+/**
+ * Loads the appropriate search results given the search input's new value.
+ *
+ * If four or more characters are entered, assume it composes a department key (eg. "CPSC")
+ * and an incomplete course key and load those courses.
+ *
+ * If at least one character is entered, assume it composes an incomplete department key
+ * and load those departments.
+ *
+ * If no characters are entered, show a default prompt instead.
+ */
+function searchInputChanged() {
+    var sSearchTerm = $(this).val().trim();
+    
+    if(sSearchTerm.length >= 4)
+    {
+        // Interpret the current value as a department key
+        var sDepartmentKey = sSearchTerm.substring(0, 4).toUpperCase();
+        var sCourseKey = sSearchTerm.substring(4).trim();
+        
+        UBCCalendarAPI.getCoursesStartingWith(sSearchTerm, sDepartmentKey, sCourseKey, 6, addSearchResultsCourses);
+    } else
+    if(sSearchTerm.length >= 1) UBCCalendarAPI.getDepartmentsStartingWith(sSearchTerm.toUpperCase(), 6, addSearchResultsDepartments);
+    else {
+        clearSearchResults();
+        addSearchResult('Search for a course', 'For example, "CPSC 110".');   
+    }  
+}
+
+/**
+ * Called when the department loading call returns, giving an array of Departments to
+ * show as search results.
+ */
+function addSearchResultsDepartments(aDepartments) {
+    clearSearchResults();
+    for(var i = 0; i < aDepartments.length; i++) addSearchResult(aDepartments[i].sKey, aDepartments[i].sTitle);
+}
+
+/**
+ * Called when the course loading call returns, giving an array of Courses to show as
+ * search results.
+ *
+ * @param sDepartmentKey The department key of the courses
+ * @param sSearchTerm    The original search term, used for ignoring stale results
+ * @param aCourses       The array of Courses to show
+ */
+function addSearchResultsCourses(sDepartmentKey, sSearchTerm, aCourses) {
+    if($(".ui-content-text-header-search").val().trim() != sSearchTerm) return;
+    
+    clearSearchResults();
+    for(var i = 0; i < aCourses.length; i++) addSearchResult(sDepartmentKey + " " + aCourses[i].sKey, aCourses[i].sTitle);
+}
+
+function clearSearchResults() {
+    $(".search-results").empty();
+}
+
+function addSearchResult(sTitle, sDescription)
+{
+    $(".search-results").append("<li>"+sTitle+"<br/><span>"+sDescription+"</span></</li>");
+}
+
+function showCourseModalWindow() {
+    $("#course").css("visibility", "visible");
+    $("#course").animate({opacity:1}, 150);
+    
+    var courseName = $(this).find("#course-name").text();
+    
+    $("#course .ui-modal-window-header-title").text(courseName);
+}
+
+function hideCourseModalWindow() {
+    $("#course").css("visibility", "hidden");
+    $("#course").css("opacity", "0");
+}

@@ -13,7 +13,7 @@
         <link rel="stylesheet" media="(max-width: 800px)" href="css/mobile-styles.css" />
     </head>
     <body>
-        <div class="ui-modal">
+        <div class="ui-modal" id="course">
             <div class="ui-modal-window">
                 <div class="ui-modal-window-header">
                     <div class="ui-modal-window-header-title">CPSC 210</div>
@@ -95,13 +95,23 @@
         
         <div class="ui-content">
             <div class="ui-content-text">
-                <div class="ui-content-text-header">Courses</div>
+                <div class="ui-content-text-header">
+                    <div class="ui-content-text-header-left">
+                        Courses
+                    </div>    
+                    <div class="ui-content-text-header-right">
+                        <span class="icon"><i class="material-icons md-24">search</i></span>
+                        <input class="ui-content-text-header-search" type="text" placeholder="Add course...">
+                        <ul class="search-results">
+                        </ul>
+                    </div>
+                </div>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra, arcu et pharetra posuere, quam tellus auctor turpis, et rhoncus mauris nisi et lectus. 
             </div>
             <div class="ui-divider"></div>
             
             <div class="ui-content-text">
-                <table class="selectable">
+                <table class="selectable" id="course-list">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -114,28 +124,28 @@
                     
                     <tbody>
                         <tr>
-                            <td>CLST 105</td>
+                            <td id="course-name">CLST 105</td>
                             <td>Greek and Roman Mythology</td>
                             <td>1/2</td>
                             <td>Lecture (2/2), Discussion (12/11)</td>
                             <td>46</td>
                         </tr>
                         <tr class="odd">
-                            <td>CPSC 210</td>
+                            <td id="course-name">CPSC 210</td>
                             <td>Software Construction</td>
                             <td>1/2</td>
                             <td>Lecture (3/3), Lab (16/23)</td>
                             <td>117</td>
                         </tr>
                         <tr>
-                            <td>MATH 200</td>
+                            <td id="course-name">MATH 200</td>
                             <td>Calculus III</td>
                             <td>1/2</td>
                             <td>Lecture (7/3)</td>
                             <td>10</td>
                         </tr>
                         <tr class="odd">
-                            <td>PHYS 117</td>
+                            <td id="course-name">PHYS 117</td>
                             <td>Dynamics and Waves</td>
                             <td>1</td>
                             <td>Lecture (1), Tutorial (6)</td>

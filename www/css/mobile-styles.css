@@ -14,7 +14,11 @@ table tr td {
     padding:6px;
 }
 
-/** For really small screens **/
+div.ui-content div.ui-content-text div.ui-content-text-header-right {
+    width:200px;
+}
+
+/** For small screens **/
 @media (max-width: 600px) {
     
     div.ui-modal div.ui-modal-window {
@@ -26,7 +30,31 @@ table tr td {
         font-size:14px;
     }
     
+    div.ui-header div.ui-header-logo i {
+        margin-top:26px;
+        font-size:28px;
+    }
+    
     div.ui-header div.ui-header-button {
         padding:0 10px;
     }
+    
+    div.ui-content div.ui-content-text div.ui-content-text-header-right {
+        width:160px;
+    }
+}
+
+/** For even smaller screens **/
+@media (max-width: 460px) {
+    div.ui-header div.ui-header-logo {
+        font-size:12px;
+    }
+    
+    div.ui-header div.ui-header-logo i {
+        margin-top:28px;
+        font-size:24px;
+    }
+    
+    div.ui-header div.ui-header-button {
+        font-size:12px;
 }

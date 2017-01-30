@@ -302,6 +302,51 @@ var UBCCalendarAPI = (function($, dDate) {
         if (oSections.hasOwnProperty(sCourseID)) return oSections[sCourseID];
         else return null;
     }
+    
+    /**
+     * Calls fCallback with an array of Departments whose keys starts with the given sText.
+     *
+     * @param sText     The text to check each key for
+     * @param nLimit    The maximum number of departments to return
+     * @param fCallback A function taking an array of Departments as a param
+     */
+    function getDepartmentsStartingWith(sText, nLimit, fCallback) {
+        getDepartments(function(aDepartments) {
+            var aResults = [];
+            for(var i = 0; i < aDepartments.length; i++)
+            {
+                if(aDepartments[i].sKey.substring(0, sText.length) == sText) aResults.push(aDepartments[i]);
+                
+                if(aResults.length >= nLimit) break;
+            }
+            
+            fCallback(aResults);
+        });
+    }
+    
+    /**
+     * Calls fCallback with the department key, the original search term, and an array
+     * of Courses.
+     *
+     * @param sSearchTerm    The original search term, used for ignoring stale results
+     * @param sDepartmentKey The department key of the courses to get
+     * @param sCourseKey     The (partial) course key of the courses to get
+     * @param nLimit         The maximum number of courses to get
+     * @param fCallback      The callback to call with the results
+     */
+    function getCoursesStartingWith(sSearchTerm, sDepartmentKey, sCourseKey, nLimit, fCallback) {
+        getCourses(function(aCourses) {
+            var aResults = [];
+            for(var i = 0; i < aCourses.length; i++)
+            {
+                if(aCourses[i].sKey.substring(0, sCourseKey.length) == sCourseKey) aResults.push(aCourses[i]);
+                
+                if(aResults.length >= nLimit) break;
+            }
+            
+            fCallback(sDepartmentKey, sSearchTerm, aResults);
+        }, sDepartmentKey);
+    }
 
     /**
      * Loads the XML data from UBC's SRV servlet. 
@@ -361,6 +406,8 @@ var UBCCalendarAPI = (function($, dDate) {
         getDepartments: getDepartments,
         getCourses: getCourses,
         getSections: getSections,
-        getSectionContainer:getSectionContainer
+        getSectionContainer:getSectionContainer,
+        getDepartmentsStartingWith:getDepartmentsStartingWith,
+        getCoursesStartingWith:getCoursesStartingWith
     }
 })(jQuery, new Date());

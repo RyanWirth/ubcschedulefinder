@@ -1,7 +1,7 @@
 var UBCCalendarAPI = (function($, dDate) {
     var sBaseURL = "https://www.ryanwirth.ca/misc/ubcschedulefinder/proxy.php?";
-    var nSessionYear = 2017; //dDate.getFullYear();
-    var sSessionCode = "S";
+    var nSessionYear = 2016; //dDate.getFullYear();
+    var sSessionCode = "W";
 
     // Caching
     var bDepartments = false; // False if getDepartments hasn't been called, true otherwise
@@ -39,6 +39,7 @@ var UBCCalendarAPI = (function($, dDate) {
     function SectionContainer(sCourseID)
     {
         this.sCourseID = sCourseID;
+        this.sTitle = "";
         this.aSections = []; // This is an array of arrays - sorted by activity type.
     }
 
@@ -104,6 +105,8 @@ var UBCCalendarAPI = (function($, dDate) {
         // We now have the JSON and the final callback function
         var aDepts = json.dept;
         for (var i in aDepts) {
+            if(i == "@attributes") break; // There are no results
+            
             var sKey = aDepts[i]["@attributes"].key;
             var sTitle = aDepts[i]["@attributes"].title;
             var sFacultyCode = aDepts[i]["@attributes"].faccode;
@@ -152,6 +155,8 @@ var UBCCalendarAPI = (function($, dDate) {
 
         var aCourses = json.course;
         for (var i in aCourses) {
+            if(i == "@attributes") break; // There are no results
+            
             var sKey = aCourses[i]["@attributes"].key;
             var sTitle = aCourses[i]["@attributes"].title;
             var sDescription = aCourses[i]["@attributes"].descr;
@@ -182,8 +187,19 @@ var UBCCalendarAPI = (function($, dDate) {
 
         // Initialize the section object to show that this course has been polled already.
         oSections[sCourseID] = new SectionContainer(sCourseID);
-
+        
         var aCourseData = sCourseID.split("-");
+        
+        // Find the course object for this course and copy its title over, if it exists (which it should)
+        if(oCourses.hasOwnProperty(aCourseData[0])) {
+            if(oCourses[aCourseData[0]].hasOwnProperty("aData")) {
+                for(var i = 0; i < oCourses[aCourseData[0]].aData.length; i++)
+                {
+                    if(oCourses[aCourseData[0]].aData[i].sKey == aCourseData[1]) oSections[sCourseID].sTitle = oCourses[aCourseData[0]].aData[i].sTitle;    
+                }
+            }
+        }
+        
         loadXML(getSections_loaded, fCallback, aCourseData[0], aCourseData[1], true, sCourseID);
     }
 
@@ -236,7 +252,7 @@ var UBCCalendarAPI = (function($, dDate) {
         else if (aInstructorsData != "") aInstructors.push(getSections_parseInstructor(aInstructorsData));
 
         // Assemble meeting data.
-        var aMeetingsData = oSection["teachingunits"]["teachingunit"]["meetings"].meeting;
+        var aMeetingsData = oSection["teachingunits"]["teachingunit"].hasOwnProperty("meetings") ? oSection["teachingunits"]["teachingunit"]["meetings"].meeting : [];
         var aMeetings = [];
         if (Array.isArray(aMeetingsData))
             for (var j in aMeetingsData) aMeetings.push(getSections_parseMeeting(aMeetingsData[j]));

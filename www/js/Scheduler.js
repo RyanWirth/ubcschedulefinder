@@ -253,6 +253,8 @@ $(function() {
     
     $(".ui-content-text-header-search").bind("input", searchInputChanged);
     $(".ui-content-text-header-search").focusin(searchInputChanged);
+    
+    $(".search-results").on("click", ".search-result", selectCourse);
 });
 
 /**
@@ -291,6 +293,7 @@ function searchInputChanged() {
 function addSearchResultsDepartments(aDepartments) {
     clearSearchResults();
     for(var i = 0; i < aDepartments.length; i++) addSearchResult(aDepartments[i].sKey, aDepartments[i].sTitle);
+    if(aDepartments.length == 0) addSearchResult("No departments found", "Please try another.");
 }
 
 /**
@@ -306,6 +309,7 @@ function addSearchResultsCourses(sDepartmentKey, sSearchTerm, aCourses) {
     
     clearSearchResults();
     for(var i = 0; i < aCourses.length; i++) addSearchResult(sDepartmentKey + " " + aCourses[i].sKey, aCourses[i].sTitle);
+    if(aCourses.length == 0) addSearchResult("No courses found", "Please try another.");
 }
 
 function clearSearchResults() {
@@ -314,7 +318,72 @@ function clearSearchResults() {
 
 function addSearchResult(sTitle, sDescription)
 {
-    $(".search-results").append("<li>"+sTitle+"<br/><span>"+sDescription+"</span></</li>");
+    $(".search-results").append('<li class="search-result" data-key="'+sTitle+'">'+sTitle+"<br/><span>"+sDescription+"</span></</li>");
+}
+
+function selectCourse() {
+    var sKey = $(this).data("key");
+    var aStringData = sKey.split(" ");
+    
+    if(aStringData.length != 2) return;
+    else requestCourse(aStringData[0], aStringData[1]);
+}
+
+function requestCourse(sDepartmentKey, sCourseKey) {
+    UBCCalendarAPI.getSections(addCourseToList, sDepartmentKey + "-" + sCourseKey);
+}
+
+var iCourses = 0;
+var aCoursePossibilities = [];
+function addCourseToList(scSectionContainer)
+{
+    var aStringData = scSectionContainer.sCourseID.split("-");
+    var sDepartmentKey = aStringData[0];
+    var sCourseKey = aStringData[1];
+    var bHasTerm1 = false;
+    var bHasTerm2 = false;
+    var sSectionTypes = "";
+    var iPossibilitiesTerm1 = 1;
+    var iPossibilitiesTerm2 = 1;
+    
+    for(var i = 0; i < scSectionContainer.aSections.length; i++)
+    {
+        var sActivity = scSectionContainer.aSections[i][0].sActivity;
+        var iTerm1 = 0;
+        var iTerm2 = 0;
+        
+        for(var j = 0; j < scSectionContainer.aSections[i].length; j++)
+        {
+            var sTerm = scSectionContainer.aSections[i][j].sTerm;
+            if(sTerm == "1") iTerm1++;
+            else if(sTerm == "2") iTerm2++;
+        }
+        
+        iPossibilitiesTerm1 *= iTerm1;
+        iPossibilitiesTerm2 *= iTerm2;
+        bHasTerm1 = bHasTerm1 || (iTerm1 > 0);
+        bHasTerm2 = bHasTerm2 || (iTerm2 > 0);
+        sSectionTypes += sActivity + " (" + iTerm1 + "/" + iTerm2 + "), ";
+    }
+    
+    var sTerms = (bHasTerm1 && bHasTerm2) ? "1/2" : (bHasTerm1 ? "1" : "2");
+    var iPossibilities = (bHasTerm1 ? iPossibilitiesTerm1 : 0) + (bHasTerm2 ? iPossibilitiesTerm2 : 0);
+    sSectionTypes = sSectionTypes.substr(0,sSectionTypes.length - 2); // Remove trailing ", "
+    
+    $("#course-list tbody").append('<tr'+(++iCourses % 2 == 1 ? ' class="odd"' : '')+'>\
+                            <td id="course-name">'+sDepartmentKey + " " + sCourseKey+'</td>\
+                            <td>'+scSectionContainer.sTitle+'</td>\
+                            <td>'+sTerms+'</td>\
+                            <td>'+sSectionTypes+'</td>\
+                            <td>'+iPossibilities+'</td>\
+                        </tr>');
+    
+    // Update the total possibilities counter in the footer
+    aCoursePossibilities.push(iPossibilities);
+    var iTotalPossibilities = 1;
+    for(var i = 0; i < aCoursePossibilities.length; i++) iTotalPossibilities *= aCoursePossibilities[i];
+    $("#course-list tfoot tr").attr("class", (iCourses % 2 == 0 ? "odd" : ""));
+    $("#course-list tfoot tr td#total").text(iTotalPossibilities);
 }
 
 function showCourseModalWindow() {

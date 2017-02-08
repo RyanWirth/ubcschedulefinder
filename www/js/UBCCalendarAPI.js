@@ -43,7 +43,7 @@ var UBCCalendarAPI = (function($, dDate) {
         this.aSections = []; // This is an array of arrays - sorted by activity type.
     }
 
-    function Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors) {
+    function Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors, bSelected) {
         // For example, "MATH-200" "001" "Lecture" 6 "Full" "1-2" "Sep 06, 2016" "Apr 06, 2017" [MeetingObj, MeetingObj, MeetingObj] [InstructorObj]
         this.sCourseID = sCourseID;
         this.sKey = sKey;
@@ -55,6 +55,7 @@ var UBCCalendarAPI = (function($, dDate) {
         this.sEndWeek = sEndWeek;
         this.aMeetings = aMeetings;
         this.aInstructors = aInstructors;
+        this.bSelected = bSelected;
     }
 
     function Meeting(sTerm, sDay, nStartTime, nEndTime, sBuildingCode, sBuilding, sRoomNumber) {
@@ -239,9 +240,17 @@ var UBCCalendarAPI = (function($, dDate) {
         var sTerm = oSection["teachingunits"]["teachingunit"]["@attributes"].termcd;
         var sStartWeek = oSection["teachingunits"]["teachingunit"]["@attributes"].startwk;
         var sEndWeek = oSection["teachingunits"]["teachingunit"]["@attributes"].endwk;
+        var bSelected = true;
         
         // Don't include waiting lists
         if(sActivity == "Waiting List") return;
+        
+        // Check for blocked or full sections - default is deselected
+        if(sStatus == "Blocked" || 
+           sStatus == "STT"     ||
+           sStatus == "Full"    ||
+           sStatus == "Restricted") 
+            bSelected = false;
 
         // Assemble instructor data. When there are multiple instructors,
         // aInstructorsData is an array. Otherwise it's just an object.
@@ -258,7 +267,7 @@ var UBCCalendarAPI = (function($, dDate) {
             for (var j in aMeetingsData) aMeetings.push(getSections_parseMeeting(aMeetingsData[j]));
         else aMeetings.push(getSections_parseMeeting(aMeetingsData));
 
-        var sSection = new Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors);
+        var sSection = new Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors, bSelected);
 
         // Add the section to the SectionContainer, sorted by activity.
         for(var j = 0; j < oSections[sCourseID].aSections.length; j++)

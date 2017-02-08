@@ -244,11 +244,12 @@ var Generator = (function() {
 
 //Scheduler.addCourses(["CPSC-210", "MATH-200"]);
 
-$(function() {
+$(function() 
+{
     // Load the departments
     UBCCalendarAPI.getDepartments(function(){});
     
-    $("#course-list tbody tr").click(showCourseModalWindow);
+    $("#course-list tbody").on("click", "tr", showCourseModalWindow);
     $("#course .ui-modal-window-header-close").click(hideCourseModalWindow);
     
     $(".ui-content-text-header-search").bind("input", searchInputChanged);
@@ -268,7 +269,8 @@ $(function() {
  *
  * If no characters are entered, show a default prompt instead.
  */
-function searchInputChanged() {
+function searchInputChanged()
+{
     var sSearchTerm = $(this).val().trim();
     
     if(sSearchTerm.length >= 4)
@@ -290,7 +292,8 @@ function searchInputChanged() {
  * Called when the department loading call returns, giving an array of Departments to
  * show as search results.
  */
-function addSearchResultsDepartments(aDepartments) {
+function addSearchResultsDepartments(aDepartments) 
+{
     clearSearchResults();
     for(var i = 0; i < aDepartments.length; i++) addSearchResult(aDepartments[i].sKey, aDepartments[i].sTitle);
     if(aDepartments.length == 0) addSearchResult("No departments found", "Please try another.");
@@ -304,7 +307,8 @@ function addSearchResultsDepartments(aDepartments) {
  * @param sSearchTerm    The original search term, used for ignoring stale results
  * @param aCourses       The array of Courses to show
  */
-function addSearchResultsCourses(sDepartmentKey, sSearchTerm, aCourses) {
+function addSearchResultsCourses(sDepartmentKey, sSearchTerm, aCourses)
+{
     if($(".ui-content-text-header-search").val().trim() != sSearchTerm) return;
     
     clearSearchResults();
@@ -312,7 +316,8 @@ function addSearchResultsCourses(sDepartmentKey, sSearchTerm, aCourses) {
     if(aCourses.length == 0) addSearchResult("No courses found", "Please try another.");
 }
 
-function clearSearchResults() {
+function clearSearchResults() 
+{
     $(".search-results").empty();
 }
 
@@ -321,55 +326,75 @@ function addSearchResult(sTitle, sDescription)
     $(".search-results").append('<li class="search-result" data-key="'+sTitle+'">'+sTitle+"<br/><span>"+sDescription+"</span></</li>");
 }
 
-function selectCourse() {
+function selectCourse() 
+{
     var sKey = $(this).data("key");
     var aStringData = sKey.split(" ");
     
     if(aStringData.length != 2) return;
-    else requestCourse(aStringData[0], aStringData[1]);
-}
-
-function requestCourse(sDepartmentKey, sCourseKey) {
-    UBCCalendarAPI.getSections(addCourseToList, sDepartmentKey + "-" + sCourseKey);
+    else UBCCalendarAPI.getSections(addCourseToList, aStringData[0] + "-" + aStringData[1]);
+    
+    // Clear the search bar
+    $(".ui-content-text-header-search").val("");
 }
 
 var iCourses = 0;
 var aCoursePossibilities = [];
 function addCourseToList(scSectionContainer)
 {
+    console.log("Adding to list");
     var aStringData = scSectionContainer.sCourseID.split("-");
     var sDepartmentKey = aStringData[0];
     var sCourseKey = aStringData[1];
     var bHasTerm1 = false;
     var bHasTerm2 = false;
+    var bHasTerm1_2 = false;
     var sSectionTypes = "";
     var iPossibilitiesTerm1 = 1;
     var iPossibilitiesTerm2 = 1;
+    var iPossibilitiesTerm1_2 = 1;
     
     for(var i = 0; i < scSectionContainer.aSections.length; i++)
     {
         var sActivity = scSectionContainer.aSections[i][0].sActivity;
         var iTerm1 = 0;
         var iTerm2 = 0;
+        var iTerm1_2 = 0;
         
         for(var j = 0; j < scSectionContainer.aSections[i].length; j++)
         {
             var sTerm = scSectionContainer.aSections[i][j].sTerm;
             if(sTerm == "1") iTerm1++;
             else if(sTerm == "2") iTerm2++;
+            else if(sTerm == "1-2") iTerm1_2++;
         }
         
         iPossibilitiesTerm1 *= iTerm1;
         iPossibilitiesTerm2 *= iTerm2;
+        iPossibilitiesTerm1_2 *= iTerm1_2;
         bHasTerm1 = bHasTerm1 || (iTerm1 > 0);
         bHasTerm2 = bHasTerm2 || (iTerm2 > 0);
-        sSectionTypes += sActivity + " (" + iTerm1 + "/" + iTerm2 + "), ";
+        bHasTerm1_2 = bHasTerm1_2 || (iTerm1_2 > 0);
+        
+        // Format the section types descriptor
+        sSectionTypes += sActivity + " (";
+        if(bHasTerm1_2) sSectionTypes += iTerm1_2;
+        else if(bHasTerm1 && bHasTerm2) sSectionTypes += iTerm1 + "/" + iTerm2;
+        else if(bHasTerm1) sSectionTypes += iTerm1;
+        else sSectionTypes += iTerm2;
+        sSectionTypes += "), ";
     }
     
-    var sTerms = (bHasTerm1 && bHasTerm2) ? "1/2" : (bHasTerm1 ? "1" : "2");
-    var iPossibilities = (bHasTerm1 ? iPossibilitiesTerm1 : 0) + (bHasTerm2 ? iPossibilitiesTerm2 : 0);
-    sSectionTypes = sSectionTypes.substr(0,sSectionTypes.length - 2); // Remove trailing ", "
+    // Remove trailing ", "
+    sSectionTypes = sSectionTypes.substr(0,sSectionTypes.length - 2);
     
+    // Format the term column: 1/2 or 1 or 2, depending on the availability of sections
+    var sTerms = bHasTerm1_2 ? "1-2" : ((bHasTerm1 && bHasTerm2) ? "1/2" : (bHasTerm1 ? "1" : "2"));
+    
+    // Calculate the total number of possibilities
+    var iPossibilities = (bHasTerm1 ? iPossibilitiesTerm1 : 0) + (bHasTerm2 ? iPossibilitiesTerm2 : 0) + (bHasTerm1_2 ? iPossibilitiesTerm1_2 : 0);
+    
+    // Add the course to the table
     $("#course-list tbody").append('<tr'+(++iCourses % 2 == 1 ? ' class="odd"' : '')+'>\
                             <td id="course-name">'+sDepartmentKey + " " + sCourseKey+'</td>\
                             <td>'+scSectionContainer.sTitle+'</td>\
@@ -386,16 +411,122 @@ function addCourseToList(scSectionContainer)
     $("#course-list tfoot tr td#total").text(iTotalPossibilities);
 }
 
-function showCourseModalWindow() {
+function showCourseModalWindow() 
+{
     $("#course").css("visibility", "visible");
     $("#course").animate({opacity:1}, 150);
     
-    var courseName = $(this).find("#course-name").text();
+    var sCourseName = $(this).find("#course-name").text();
+    var aStringData = sCourseName.split(" ");
     
-    $("#course .ui-modal-window-header-title").text(courseName);
+    // Update the modal window title to be the course name
+    $("#course .ui-modal-window-header-title").text(sCourseName);
+    
+    // Clear the section list
+    $("#section-list tbody").empty();
+    
+    // Load the sections
+    UBCCalendarAPI.getSections(addSectionsToModalWindow, aStringData[0] + "-" + aStringData[1]);
 }
 
-function hideCourseModalWindow() {
+function hideCourseModalWindow() 
+{
     $("#course").css("visibility", "hidden");
     $("#course").css("opacity", "0");
+}
+
+/**
+ * Adds all of the course sections to the course modal window.
+ *
+ * @param scSectionContainer A SectionContainer object describing the course's sections
+ */
+function addSectionsToModalWindow(scSectionContainer) {
+    for(var i = 0; i < scSectionContainer.aSections.length; i++)
+    {
+        for(var j = 0; j < scSectionContainer.aSections[i].length; j++)
+        {
+            var sStatus = scSectionContainer.aSections[i][j].sStatus;
+            var sKey = scSectionContainer.aSections[i][j].sKey;
+            var sActivity = scSectionContainer.aSections[i][j].sActivity;
+            var sTerm = scSectionContainer.aSections[i][j].sTerm;
+            var bSelected = scSectionContainer.aSections[i][j].bSelected;
+            
+            var aMeetingSlots = getMeetingSlotsFromSection(scSectionContainer.aSections[i][j]);
+            
+            
+            $("#section-list tbody").append('<tr>\
+                                                <td><input '+(bSelected ? "checked " : "")+'type="checkbox" /></td>\
+                                                <td>'+sStatus+'</td>\
+                                                <td>'+sKey+'</td>\
+                                                <td>'+sActivity+'</td>\
+                                                <td>'+aMeetingSlots[0][0]+'</td>\
+                                                <td>'+aMeetingSlots[0][3]+'</td>\
+                                                <td>'+aMeetingSlots[0][1]+'</td>\
+                                                <td>'+aMeetingSlots[0][2]+'</td>\
+                                            </tr>');
+            
+            // If there are additional meeting slots, add them as separate rows to the table
+            for(var k = 1; k < aMeetingSlots.length; k++)
+            {
+                $("#section-list tbody").append('<tr>\
+                                                    <td></td>\
+                                                    <td></td>\
+                                                    <td></td>\
+                                                    <td></td>\
+                                                    <td>'+aMeetingSlots[k][0]+'</td>\
+                                                    <td>'+aMeetingSlots[k][3]+'</td>\
+                                                    <td>'+aMeetingSlots[k][1]+'</td>\
+                                                    <td>'+aMeetingSlots[k][2]+'</td>\
+                                                </tr>');
+            }
+        }
+    }
+}
+
+/**
+ * Determines the unique meeting slots for a section.
+ *
+ * @param sSection A Section object
+ * @return         An array consisting of arrays of meeting data with the following order: term, start time, end time, days
+ */
+function getMeetingSlotsFromSection(sSection)
+{
+    var aMeetingSlots = [];
+    for(var k = 0; k < sSection.aMeetings.length; k++)
+    {
+        var mMeeting = sSection.aMeetings[k];
+        
+        // Parse the start and end times into a time string
+        var iStartHour = Math.floor(mMeeting.nStartTime);
+        var iStartMinute = (mMeeting.nStartTime - iStartHour) * 60;
+        var iEndHour = Math.floor(mMeeting.nEndTime);
+        var iEndMinute = (mMeeting.nEndTime - iEndHour) * 60;
+        var sStartTime = (iStartHour < 10 ? "0" : "") + iStartHour + ":" + (iStartMinute < 10 ? "0" : "") + iStartMinute;
+        var sEndTime = (iEndHour < 10 ? "0" : "") + iEndHour + ":" + (iEndMinute < 10 ? "0" : "") + iEndMinute;
+        
+        // Find a meeting slot to put this in
+        var bFoundSlot = false;
+        for(var l = 0; l < aMeetingSlots.length; l++)
+        {
+            if(aMeetingSlots[l][1] == sStartTime && aMeetingSlots[l][2] == sEndTime)
+            {
+                // This meeting is at the same time - append its day to the day string
+                if(aMeetingSlots[l][3].indexOf(mMeeting.sDay) == -1) aMeetingSlots[l][3] += mMeeting.sDay + " ";
+                
+                // Update the term descriptor if the section spans both terms
+                if(aMeetingSlots[l][0] == "1" && mMeeting.sTerm == "2") aMeetingSlots[l][0] = "1-2";
+                else if(aMeetingSlots[l][0] == "2" && mMeeting.sTerm == "1") aMeetingSlots[l][0] = "1-2";
+                
+                bFoundSlot = true;
+            }
+        }
+        
+        if(!bFoundSlot)
+        {
+            // Create a new meeting slot for this meeting
+            var aMeetingSlot = [mMeeting.sTerm, sStartTime, sEndTime, mMeeting.sDay + " "];
+            aMeetingSlots.push(aMeetingSlot);
+        }
+    }
+    return aMeetingSlots;
 }

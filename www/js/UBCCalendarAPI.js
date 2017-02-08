@@ -1,4 +1,5 @@
-var UBCCalendarAPI = (function($, dDate) {
+var UBCCalendarAPI = (function($, dDate) 
+{
     var sBaseURL = "https://www.ryanwirth.ca/misc/ubcschedulefinder/proxy.php?";
     var nSessionYear = 2016; //dDate.getFullYear();
     var sSessionCode = "W";
@@ -17,7 +18,8 @@ var UBCCalendarAPI = (function($, dDate) {
     loadCache();
 
     /* CLASSES */
-    function Department(sKey, sTitle, sFacultyCode, sFaculty) {
+    function Department(sKey, sTitle, sFacultyCode, sFaculty) 
+    {
         // For example, "CPSC" "Computer Science" "SCIE" "Faculty of Science" 
         this.sKey = sKey;
         this.sTitle = sTitle;
@@ -25,7 +27,8 @@ var UBCCalendarAPI = (function($, dDate) {
         this.sFaculty = sFaculty;
     }
 
-    function Course(sKey, sTitle, sDescription) {
+    function Course(sKey, sTitle, sDescription) 
+    {
         // For example, "100" "Computational Thinking" "Meaning and impact of computational thinking. Solving problems..."
         this.sKey = sKey;
         this.sTitle = sTitle;
@@ -43,8 +46,9 @@ var UBCCalendarAPI = (function($, dDate) {
         this.aSections = []; // This is an array of arrays - sorted by activity type.
     }
 
-    function Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors, bSelected) {
-        // For example, "MATH-200" "001" "Lecture" 6 "Full" "1-2" "Sep 06, 2016" "Apr 06, 2017" [MeetingObj, MeetingObj, MeetingObj] [InstructorObj]
+    function Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors, bSelected) 
+    {
+        // For example, "MATH-200" "001" "Lecture" 6 "Full" "1-2" "Sep 06, 2016" "Apr 06, 2017" [MeetingObj, MeetingObj, MeetingObj] [InstructorObj] true
         this.sCourseID = sCourseID;
         this.sKey = sKey;
         this.sActivity = sActivity;
@@ -58,7 +62,8 @@ var UBCCalendarAPI = (function($, dDate) {
         this.bSelected = bSelected;
     }
 
-    function Meeting(sTerm, sDay, nStartTime, nEndTime, sBuildingCode, sBuilding, sRoomNumber) {
+    function Meeting(sTerm, sDay, nStartTime, nEndTime, sBuildingCode, sBuilding, sRoomNumber)
+    {
         // For example, "1" "Mon" 16 18 "SWNG" "West Mall Swing Space" "222"
         // For a meeting on Mondays in term 1 from 16:00 to 18:00 at SWNG 222
         this.sTerm = sTerm;
@@ -70,7 +75,8 @@ var UBCCalendarAPI = (function($, dDate) {
         this.sRoomNumber = sRoomNumber;
     }
 
-    function Instructor(sName, nUBCID) {
+    function Instructor(sName, nUBCID) 
+    {
         this.sName = sName;
         this.nUBCID = nUBCID;
     }
@@ -82,7 +88,8 @@ var UBCCalendarAPI = (function($, dDate) {
      *
      * @param fCallback A callback function taking one argument: an array of Departments
      */
-    function getDepartments(fCallback) {
+    function getDepartments(fCallback)
+    {
         // Cache the department list in memory
         if (aDepartments.length > 0) {
             fCallback(aDepartments);
@@ -128,9 +135,12 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param fCallback     A callback function taking two arguments: an array of Courses and the given sDepartmentKey
      * @param sDepartmentKey The four letter department key (eg. "CPSC", "CHEM", "MATH")
      */
-    function getCourses(fCallback, sDepartmentKey) {
-        if (oCourses.hasOwnProperty(sDepartmentKey)) {
-            if (oCourses[sDepartmentKey].hasOwnProperty("aData")) {
+    function getCourses(fCallback, sDepartmentKey)
+    {
+        if (oCourses.hasOwnProperty(sDepartmentKey)) 
+        {
+            if (oCourses[sDepartmentKey].hasOwnProperty("aData")) 
+            {
                 // This department has already been polled
                 fCallback(oCourses[sDepartmentKey].aData, sDepartmentKey);
                 return;
@@ -151,11 +161,13 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param sDepartmentKey The four letter department key (eg. "CPSC", "CHEM", "MATH")
      * @param json           A json object containing the response from the server
      */
-    function getCourses_loaded(fCallback, sDepartmentKey, json) {
+    function getCourses_loaded(fCallback, sDepartmentKey, json) 
+    {
         oCourses[sDepartmentKey].aData = [];
 
         var aCourses = json.course;
-        for (var i in aCourses) {
+        for (var i in aCourses) 
+        {
             if(i == "@attributes") break; // There are no results
             
             var sKey = aCourses[i]["@attributes"].key;
@@ -177,9 +189,12 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param fCallback A callback function taking two arguments: an array of Courses and the sCourseID
      * @param sCourseID The course ID to get the sections for (eg. "CPSC-210", "MATH-100")
      */
-    function getSections(fCallback, sCourseID) {
-        if (oSections.hasOwnProperty(sCourseID)) {
-            if(oSections[sCourseID].aSections.length != 0) {
+    function getSections(fCallback, sCourseID) 
+    {
+        if (oSections.hasOwnProperty(sCourseID))
+        {
+            if(oSections[sCourseID].aSections.length != 0) 
+            {
                 // This course has been polled already, return the cached data
                 fCallback(oSections[sCourseID], sCourseID);
                 return;
@@ -192,8 +207,10 @@ var UBCCalendarAPI = (function($, dDate) {
         var aCourseData = sCourseID.split("-");
         
         // Find the course object for this course and copy its title over, if it exists (which it should)
-        if(oCourses.hasOwnProperty(aCourseData[0])) {
-            if(oCourses[aCourseData[0]].hasOwnProperty("aData")) {
+        if(oCourses.hasOwnProperty(aCourseData[0])) 
+        {
+            if(oCourses[aCourseData[0]].hasOwnProperty("aData")) 
+            {
                 for(var i = 0; i < oCourses[aCourseData[0]].aData.length; i++)
                 {
                     if(oCourses[aCourseData[0]].aData[i].sKey == aCourseData[1]) oSections[sCourseID].sTitle = oCourses[aCourseData[0]].aData[i].sTitle;    
@@ -212,7 +229,8 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param sCourseID   The course ID to use for caching (eg. "CPSC-210")
      * @param json        A json object containing the response from the server
      */
-    function getSections_loaded(fCallback, sCourseID, json) {
+    function getSections_loaded(fCallback, sCourseID, json) 
+    {
         // Sometimes there will be only one section. If it's an array, iterate through it. Otherwise, add the one section.
         var aSections = json.section;
         if (Array.isArray(aSections))
@@ -229,7 +247,8 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param oSection  A json object containing the section data to parse
      * @param sCourseID The course ID of this section
      */
-    function getSections_parseSection(oSection, sCourseID) {
+    function getSections_parseSection(oSection, sCourseID)
+    {
         if (oSection == undefined || oSection == null) return;
         
         var sCourseID = sCourseID;
@@ -266,6 +285,9 @@ var UBCCalendarAPI = (function($, dDate) {
         if (Array.isArray(aMeetingsData))
             for (var j in aMeetingsData) aMeetings.push(getSections_parseMeeting(aMeetingsData[j]));
         else aMeetings.push(getSections_parseMeeting(aMeetingsData));
+        
+        // If there are no valid meetings, don't bother adding this section
+        if(areMeetingsValid(aMeetings) == false) return;
 
         var sSection = new Section(sCourseID, sKey, sActivity, nCredits, sStatus, sTerm, sStartWeek, sEndWeek, aMeetings, aInstructors, bSelected);
 
@@ -276,10 +298,39 @@ var UBCCalendarAPI = (function($, dDate) {
             {
                 oSections[sCourseID].aSections[j].push(sSection);
                 return;
-            };
+            }
         }
         // We couldn't find an already created array, so we'll make the first entry here
         oSections[sCourseID].aSections.push([sSection]); 
+    }
+    
+    /**
+     * Determines if the given array of Meetings is valid (that is, it contains all the required information)
+     *
+     * @param aMeetings The array of Meetings to validate
+     * @return          True if the Meetings are valid, false otherwise
+     */
+    function areMeetingsValid(aMeetings)
+    {
+        for(var i = 0; i < aMeetings.length; i++)
+        {
+            if(!isMeetingValid(aMeetings[i])) return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Determines if the given Meeting is valid (that is, it contains all the required information)
+     *
+     * @param mMeeting The Meeting to validate
+     * @return         True if the Meeting is valid, false otherwise
+     */
+    function isMeetingValid(mMeeting)
+    {
+        if(mMeeting.nStartTime < 8 || mMeeting.nEndTime < 9 || mMeeting.nStartTime > 22 || mMeeting.nEndTime > 23) return false;
+        else if(mMeeting.sDay == "") return false;
+        else return true;
     }
 
     /**
@@ -288,7 +339,8 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param oInstructor A json object representing an instructor
      * @return            An Instructor object.
      */
-    function getSections_parseInstructor(oInstructor) {
+    function getSections_parseInstructor(oInstructor) 
+    {
         return new Instructor(oInstructor["@attributes"].name, parseInt(oInstructor["@attributes"].ubcid));
     }
 
@@ -298,7 +350,8 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param oMeeting A json object representing a meeting
      * @return         A Meeting object
      */
-    function getSections_parseMeeting(oMeeting) {
+    function getSections_parseMeeting(oMeeting) 
+    {
         var sTerm = oMeeting["@attributes"].term;
         var sDay = oMeeting["@attributes"].day;
         var sStartTime = oMeeting["@attributes"].starttime;
@@ -323,7 +376,8 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param sCourseID The course ID for the section data to be retrieved (eg. "CPSC-210", "MATH-100")
      * @return          A SectionContainer
      */
-    function getSectionContainer(sCourseID) {
+    function getSectionContainer(sCourseID) 
+    {
         if (oSections.hasOwnProperty(sCourseID)) return oSections[sCourseID];
         else return null;
     }
@@ -335,8 +389,10 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param nLimit    The maximum number of departments to return
      * @param fCallback A function taking an array of Departments as a param
      */
-    function getDepartmentsStartingWith(sText, nLimit, fCallback) {
-        getDepartments(function(aDepartments) {
+    function getDepartmentsStartingWith(sText, nLimit, fCallback) 
+    {
+        getDepartments(function(aDepartments)
+        {
             var aResults = [];
             for(var i = 0; i < aDepartments.length; i++)
             {
@@ -359,8 +415,10 @@ var UBCCalendarAPI = (function($, dDate) {
      * @param nLimit         The maximum number of courses to get
      * @param fCallback      The callback to call with the results
      */
-    function getCoursesStartingWith(sSearchTerm, sDepartmentKey, sCourseKey, nLimit, fCallback) {
-        getCourses(function(aCourses) {
+    function getCoursesStartingWith(sSearchTerm, sDepartmentKey, sCourseKey, nLimit, fCallback)
+    {
+        getCourses(function(aCourses)
+        {
             var aResults = [];
             for(var i = 0; i < aCourses.length; i++)
             {
@@ -405,7 +463,8 @@ var UBCCalendarAPI = (function($, dDate) {
     /**
      * Loads cached objects (if they exist) from localStorage.
      */
-    function loadCache() {
+    function loadCache() 
+    {
         bDepartments = localStorage.getItem("bDepartments") != null ? Boolean(localStorage.getItem("bDepartments")) : bDepartments;
         aDepartments = localStorage.getItem("aDepartments") != null ? JSON.parse(localStorage.getItem("aDepartments")) : aDepartments;
 
@@ -417,7 +476,8 @@ var UBCCalendarAPI = (function($, dDate) {
     /**
      * Saves cached objects to localStorage.
      */
-    function saveCache() {
+    function saveCache() 
+    {
         localStorage.setItem("bDepartments", bDepartments);
         localStorage.setItem("aDepartments", JSON.stringify(aDepartments));
 
@@ -427,7 +487,8 @@ var UBCCalendarAPI = (function($, dDate) {
     }
 
 
-    return {
+    return
+    {
         getDepartments: getDepartments,
         getCourses: getCourses,
         getSections: getSections,

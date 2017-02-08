@@ -133,12 +133,15 @@ var Generator = (function() {
         {
             var sSection = aSections[i];
             
-            if(doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID)) continue;
+            // Check for selection and conflicts
+            if(sSection.bSelected == false) continue;
+            else if(doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID)) continue;
             
             // No conflict, add it and let's check the next one
             if(aCurrentSchedule[iCourseID].length <= iSectionID) aCurrentSchedule[iCourseID].push(sSection);
             else aCurrentSchedule[iCourseID][iSectionID] = sSection;
             
+            // Recurse, adding the next set of section types for the current course ID
             scheduleCourseSections(iCourseID, iSectionID + 1);
         }
     }

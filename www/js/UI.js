@@ -18,7 +18,28 @@ var UI = (function ($) {
         $(".search-results").on("click", ".search-result", selectCourse);
 
         $("#section-list tbody").on("click", "input", toggleSection);
+        
+        // Load in all the past courses
+        loadCourses();
     });
+    
+    /**
+     * Loads the list of courses (if they exist) from localStorage.
+     */
+    function loadCourses() {
+        var aCourseIDs = localStorage.getItem("aCourseIDs") != null ? JSON.parse(localStorage.getItem("aCourseIDs")) : [];
+        for(var i = 0; i < aCourseIDs.length; i++) requestAddCourseToList(aCourseIDs[i]);
+    }
+
+    /**
+     * Saves the selected courses to localStorage.
+     */
+    function saveCourses() {
+        var aCourseIDs = [];
+        for(var i = 0; i < aCourses.length; i++) aCourseIDs.push(aCourses[i].sCourseID);
+        
+        localStorage.setItem("aCourseIDs", JSON.stringify(aCourseIDs));
+    }
 
     /**
      * Loads the appropriate search results given the search input's new value.
@@ -98,17 +119,27 @@ var UI = (function ($) {
     function selectCourse() {
         var sKey = $(this).data("key");
         var aStringData = sKey.split(" ");
-
+        
+        // If this isn't a complete course ID, i=gnore it (ie. the user clicked on a department result, not a course result)
         if (aStringData.length != 2) return;
-
-        // Add a dummy row to show that this row is loading
-        addPlaceholderRowToList(aStringData[0] + "-" + aStringData[1]);
-
-        // Start loading the section data
-        UBCCalendarAPI.getSections(addCourseToList, aStringData[0] + "-" + aStringData[1]);
+        
+        requestAddCourseToList(aStringData[0] + "-" + aStringData[1]);
 
         // Clear the search bar
         $(".ui-content-text-header-search").val("");
+    }
+    
+    /**
+     * Adds a placeholder row for this course and starts loading it using the UBCCalendarAPI.
+     *
+     * @param sCourseID The course to add to the main table.
+     */
+    function requestAddCourseToList(sCourseID) {
+        // Add a dummy row to show that this row is loading
+        addPlaceholderRowToList(sCourseID);
+
+        // Start loading the section data
+        UBCCalendarAPI.getSections(addCourseToList, sCourseID);
     }
 
     /**
@@ -142,6 +173,9 @@ var UI = (function ($) {
 
         // Update the data
         updateCourseInList(scSectionContainer);
+        
+        // Save the new list
+        saveCourses();
     }
     
     /**
@@ -157,6 +191,7 @@ var UI = (function ($) {
         var sRowID = "#course-row-" + scSectionContainer.sCourseID;
         $(sRowID).remove();
         
+        // Update the oddity of the remaining rows
         $("#course-list tbody tr").each(function( index ) {
             if(index % 2 == 1) $(this).addClass("odd");
             else $(this).removeClass("odd");
@@ -164,6 +199,9 @@ var UI = (function ($) {
         
         // Update the counter in the footer
         updateTotalPossibilities();
+        
+        // Save the new list
+        saveCourses();
     }
     
     /**
@@ -296,6 +334,9 @@ var UI = (function ($) {
         // Update the course we just edited in the table
         if (scCurrentCourse != null) updateCourseInList(scCurrentCourse);
         scCurrentCourse = null;
+        
+        // Save the changes in the UBCCalendarAPI
+        UBCCalendarAPI.saveCache();
 
         $("#course").css("visibility", "hidden");
         $("#course").css("opacity", "0");

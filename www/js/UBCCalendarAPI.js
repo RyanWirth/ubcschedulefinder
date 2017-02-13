@@ -460,6 +460,7 @@ var UBCCalendarAPI = (function ($, dDate) {
         getSections: getSections,
         getSectionContainer: getSectionContainer,
         getDepartmentsStartingWith: getDepartmentsStartingWith,
-        getCoursesStartingWith: getCoursesStartingWith
+        getCoursesStartingWith: getCoursesStartingWith,
+        saveCache:saveCache
     }
 })(jQuery, new Date());

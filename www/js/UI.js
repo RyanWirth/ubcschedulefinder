@@ -200,6 +200,9 @@ var UI = (function ($) {
         // Update the counter in the footer
         updateTotalPossibilities();
         
+        // Delete this course's section data from the API
+        UBCCalendarAPI.deleteCourseFromCache(scSectionContainer.sCourseID);
+        
         // Save the new list
         saveCourses();
     }
@@ -258,9 +261,10 @@ var UI = (function ($) {
 
         // Remove trailing ", "
         sSectionTypes = sSectionTypes.substr(0, sSectionTypes.length - 2);
+        if(sSectionTypes.length == 0) sSectionTypes = "None";
 
         // Format the term column: 1/2 or 1 or 2, depending on the availability of sections
-        var sTerms = bHasTerm1_2 ? "1-2" : ((bHasTerm1 && bHasTerm2) ? "1/2" : (bHasTerm1 ? "1" : "2"));
+        var sTerms = bHasTerm1_2 ? "1-2" : ((bHasTerm1 && bHasTerm2) ? "1/2" : (bHasTerm1 ? "1" : (bHasTerm2 ? "2" : "")));
 
         // Calculate the total number of possibilities
         var iPossibilities = (bHasTerm1 ? iPossibilitiesTerm1 : 0) + (bHasTerm2 ? iPossibilitiesTerm2 : 0) + (bHasTerm1_2 ? iPossibilitiesTerm1_2 : 0);
@@ -287,7 +291,7 @@ var UI = (function ($) {
     function updateTotalPossibilities() {
         // Update the total possibilities counter in the footer
         var iTotalPossibilities = 1;
-        for (var i = 0; i < aCourses.length; i++) iTotalPossibilities *= aCourses[i].iPossibilities;
+        for (var i = 0; i < aCourses.length; i++) iTotalPossibilities *= (aCourses[i].iPossibilities > 0 ? aCourses[i].iPossibilities : 1);
         $("#course-list tfoot tr td#total").text(aCourses.length == 0 ? 0 : addCommas(iTotalPossibilities));
     }
 

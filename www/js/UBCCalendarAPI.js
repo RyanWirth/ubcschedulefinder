@@ -399,6 +399,16 @@ var UBCCalendarAPI = (function ($, dDate) {
             fCallback(sDepartmentKey, sSearchTerm, aResults);
         }, sDepartmentKey);
     }
+    
+    /**
+     * Deletes the given course from the cache of sections.
+     *
+     * @param sCourseID The course ID of the sections to be deleted
+     */
+    function deleteCourseFromCache(sCourseID) {
+        if(oSections.hasOwnProperty(sCourseID)) delete oSections[sCourseID];
+        saveCache();
+    }
 
     /**
      * Loads the XML data from UBC's SRV servlet. 
@@ -461,6 +471,7 @@ var UBCCalendarAPI = (function ($, dDate) {
         getSectionContainer: getSectionContainer,
         getDepartmentsStartingWith: getDepartmentsStartingWith,
         getCoursesStartingWith: getCoursesStartingWith,
-        saveCache:saveCache
+        saveCache:saveCache,
+        deleteCourseFromCache:deleteCourseFromCache
     }
 })(jQuery, new Date());

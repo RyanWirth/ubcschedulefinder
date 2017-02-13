@@ -1,138 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-        <title>UBC Schedule Finder</title>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-        <link rel="stylesheet" href="css/styles.css" />
-        <link rel="stylesheet" media="(max-width: 800px)" href="css/mobile-styles.css" />
-    </head>
-    <body>
-        <div class="ui-modal" id="course">
-            <div class="ui-modal-window">
-                <div class="ui-modal-window-header">
-                    <div class="ui-modal-window-header-title">CPSC 210</div>
-                    <div class="ui-modal-window-header-close"><i class="material-icons md-36">close</i></div>
-                </div>
-                <div class="ui-modal-window-body">
-                    <table id="section-list">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Status</th>
-                                <th>ID</th>
-                                <th>Type</th>
-                                <th>Term</th>
-                                <th>Days</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><input type="checkbox" /></td>
-                                <td>Full</td>
-                                <td>102</td>
-                                <td>Lecture</td>
-                                <td>1</td>
-                                <td>Mon Wed Fri</td>
-                                <td>14:00</td>
-                                <td>15:00</td>
-                            </tr>
-                            <tr>
-                                <td><input checked type="checkbox" /></td>
-                                <td></td>
-                                <td>201</td>
-                                <td>Lecture</td>
-                                <td>2</td>
-                                <td>Mon Wed Fri</td>
-                                <td>11:00</td>
-                                <td>12:00</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>UBC Schedule Finder</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" media="(max-width: 800px)" href="css/mobile-styles.css" />
+</head>
+
+<body>
+    <div class="ui-modal" id="course">
+        <div class="ui-modal-window">
+            <div class="ui-modal-window-header">
+                <div class="ui-modal-window-header-title">CPSC 210</div>
+                <div class="ui-modal-window-header-button" id="modal-close"><i class="material-icons md-36">check</i></div>
+                <div class="ui-modal-window-header-button" id="modal-delete"><i class="material-icons md-36">delete</i></div>
             </div>
-            <div class="ui-modal-tint"></div>
-        </div>
-        
-        <div class="ui-header">
-            <div class="ui-header-left">
-                <div class="ui-header-logo">
-                    <i class="material-icons md-36">schedule</i>
-                    UBC Schedule Finder</div>
-            </div>
-            <div class="ui-header-right">
-                <div class="ui-header-button ui-header-button-active">COURSES</div>
-                <div class="ui-header-button">VIEW SCHEDULES</div>
-            </div>
-        </div>
-        
-        <div class="ui-content">
-            <div class="ui-content-text">
-                <div class="ui-content-text-header">
-                    <div class="ui-content-text-header-left">
-                        Courses
-                    </div>    
-                    <div class="ui-content-text-header-right">
-                        <span class="icon"><i class="material-icons md-24">search</i></span>
-                        <input class="ui-content-text-header-search" type="text" placeholder="Add course...">
-                        <ul class="search-results">
-                        </ul>
-                    </div>
-                </div>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra, arcu et pharetra posuere, quam tellus auctor turpis, et rhoncus mauris nisi et lectus. 
-            </div>
-            <div class="ui-divider"></div>
-            
-            <div class="ui-content-text">
-                <table class="selectable" id="course-list">
+            <div class="ui-modal-window-body">
+                <table id="section-list">
                     <thead>
                         <tr>
+                            <th></th>
+                            <th>Status</th>
                             <th>ID</th>
-                            <th>Name</th>
+                            <th>Type</th>
                             <th>Term</th>
-                            <th>Sections</th>
-                            <th>Combinations</th>
+                            <th>Days</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
                         </tr>
                     </thead>
-                    
                     <tbody>
                     </tbody>
-                    
-                    <tfoot>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>Total:</td>
-                            <td id="total">0</td>
-                        </tr>
-                    </tfoot>
                 </table>
-            
             </div>
         </div>
-        
-        <div class="ui-footer">
-            <div class="ui-footer-progress-bar">
-                <span style="width:0%">
-                    <div class="ui-footer-progress-bar-status">75%</div>
-                </span>
-                <div class="ui-footer-start-generation">
-                    Find Schedules
+        <div class="ui-modal-tint"></div>
+    </div>
+
+    <div class="ui-header">
+        <div class="ui-header-left">
+            <div class="ui-header-logo">
+                <i class="material-icons md-36">schedule</i> UBC Schedule Finder</div>
+        </div>
+        <div class="ui-header-right">
+            <div class="ui-header-button ui-header-button-active">COURSES</div>
+            <div class="ui-header-button">VIEW SCHEDULES</div>
+        </div>
+    </div>
+
+    <div class="ui-content">
+        <div class="ui-content-text">
+            <div class="ui-content-text-header">
+                <div class="ui-content-text-header-left">
+                    Courses
+                </div>
+                <div class="ui-content-text-header-right">
+                    <span class="icon"><i class="material-icons md-24">search</i></span>
+                    <input class="ui-content-text-header-search" type="text" placeholder="Add course...">
+                    <ul class="search-results">
+                    </ul>
                 </div>
             </div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra, arcu et pharetra posuere, quam tellus auctor turpis, et rhoncus mauris nisi et lectus.
         </div>
-        
-        <!-- jQuery first then our own JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
-        <script src="js/UBCCalendarAPI.js"></script>
-        <script src="js/Scheduler.js"></script>
-    </body>
+        <div class="ui-divider"></div>
+
+        <div class="ui-content-text">
+            <table class="selectable" id="course-list">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Term</th>
+                        <th>Selected Sections</th>
+                        <th>Combinations</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Total:</td>
+                        <td id="total">0</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="ui-footer">
+        <div class="ui-footer-progress-bar">
+            <span style="width:0%">
+                    <div class="ui-footer-progress-bar-status">75%</div>
+                </span>
+            <div class="ui-footer-start-generation">
+                Find Schedules
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first then our own JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+    <script src="js/UBCCalendarAPI.js"></script>
+    <script src="js/Scheduler.js"></script>
+    <script src="js/UI.js"></script>
+</body>
+
 </html>

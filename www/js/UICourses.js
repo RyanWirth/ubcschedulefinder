@@ -353,6 +353,7 @@ var UI = (function ($) {
      */
     function addSectionsToModalWindow(scSectionContainer) {
         scCurrentCourse = scSectionContainer;
+        var odd = true;
         for (var i = 0; i < scSectionContainer.aSections.length; i++) {
             for (var j = 0; j < scSectionContainer.aSections[i].length; j++) {
                 var sStatus = scSectionContainer.aSections[i][j].sStatus;
@@ -363,7 +364,9 @@ var UI = (function ($) {
 
                 var aMeetingSlots = getMeetingSlotsFromSection(scSectionContainer.aSections[i][j]);
 
-                $("#section-list tbody").append('<tr>\
+                odd = !odd;
+                
+                $("#section-list tbody").append('<tr'+(odd?' class="odd"':'')+'>\
                                                 <td><input data-key="' + sKey + '" ' + (bSelected ? "checked " : "") + 'type="checkbox" /></td>\
                                                 <td>' + sStatus + '</td>\
                                                 <td>' + sKey + '</td>\
@@ -376,7 +379,7 @@ var UI = (function ($) {
 
                 // If there are additional meeting slots, add them as separate rows to the table
                 for (var k = 1; k < aMeetingSlots.length; k++) {
-                    $("#section-list tbody").append('<tr>\
+                    $("#section-list tbody").append('<tr'+(odd?' class="odd"':'')+'>\
                                                     <td></td>\
                                                     <td></td>\
                                                     <td></td>\

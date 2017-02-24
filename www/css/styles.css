@@ -5,8 +5,8 @@ html {
 }
 
 body {
-    color: #DDD;
-    background-color: #E9E9E9;
+    color: #212121;
+    background-color: #F8F8F8;
     font-family: Montserrat, sans-serif;
     margin: 0;
     padding: 0;
@@ -39,9 +39,9 @@ div.ui-modal {
 }
 
 div.ui-modal div.ui-modal-window {
-    background-color: #E9E9E9;
+    background-color: #F8F8F8;
     border-radius: 6px;
-    box-shadow: 0px 4px 32px #363636;
+    box-shadow: 0px 4px 32px #212121;
     cursor: default;
     left: 50%;
     max-width: 680px;
@@ -67,12 +67,12 @@ div.ui-modal div.ui-modal-window div.ui-modal-window-body::-webkit-scrollbar {
 }
 
 div.ui-modal div.ui-modal-window div.ui-modal-window-body::-webkit-scrollbar-thumb {
-    background-color: #999;
+    background-color: #757575;
     border-radius: 3px;
 }
 
 div.ui-modal div.ui-modal-window div.ui-modal-window-header {
-    color: #363636;
+    color: #212121;
     height: 36px;
     margin-bottom: 10px;
 }
@@ -92,7 +92,7 @@ div.ui-modal div.ui-modal-window div.ui-modal-window-header div.ui-modal-window-
 }
 
 div.ui-modal div.ui-modal-window div.ui-modal-window-header div.ui-modal-window-header-button:hover {
-    text-shadow:0px 0px 4px #039BE5;
+    color: #4CAF50;
 }
 
 div.ui-modal table input[type=checkbox] {
@@ -101,7 +101,7 @@ div.ui-modal table input[type=checkbox] {
 }
 
 div.ui-modal div.ui-modal-tint {
-    background-color: #363636;
+    background-color: #212121;
     height: 100%;
     opacity: 0.5;
     width: 100%;
@@ -114,8 +114,8 @@ div.ui-container {
 }
 
 div.ui-header {
-    background-color: #039BE5;
-    box-shadow: 0px 0px 16px #363636;
+    background-color: #4CAF50;
+    box-shadow: 0px 0px 16px #212121;
     font-weight: 400;
     min-height: 80px;
     width: 100%;
@@ -131,7 +131,7 @@ div.ui-header div.ui-header-right {
 }
 
 div.ui-header div.ui-header-logo {
-    color: #FFF;
+    color: #FFFFFF;
     cursor: default;
     font-size: 18px;
     font-weight: 700;
@@ -149,6 +149,7 @@ div.ui-header div.ui-header-logo i {
 }
 
 div.ui-header div.ui-header-button {
+    color: #E1E1E1;
     cursor: pointer;
     float: left;
     font-size: 14px;
@@ -161,7 +162,7 @@ div.ui-header div.ui-header-button {
 
 div.ui-header div.ui-header-button:hover,
 div.ui-header div.ui-header-button-active {
-    color: #FFF;
+    color: #FFFFFF;
 }
 
 div.ui-content {
@@ -170,7 +171,7 @@ div.ui-content {
 }
 
 div.ui-content div.ui-content-text {
-    color: #363636;
+    color: #212121;
     cursor: default;
     font-size: 14px;
     padding: 10px;
@@ -206,9 +207,9 @@ div.ui-content div.ui-content-text input.ui-content-text-header-search {
     padding-left: 40px;
     margin-left: -40px;
     float: left;
-    color: #363636;
+    color: #212121;
     outline: none;
-    border: 1px solid #BCBCBC;
+    border: 1px solid #BDBDBD;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -219,29 +220,29 @@ div.ui-content div.ui-content-text input.ui-content-text-header-search {
 div.ui-content div.ui-content-text input.ui-content-text-header-search:hover,
 div.ui-content div.ui-content-text input.ui-content-text-header-search:active,
 div.ui-content div.ui-content-text input.ui-content-text-header-search:focus {
-    background-color: #FFF;
+    background-color: #FFFFFF;
     border: none;
     margin-top: 1px;
     margin-left: -39px;
-    box-shadow: 0px 0px 2px 1px #039BE5;
+    box-shadow: 0px 0px 2px 1px #4CAF50;
 }
 
 div.ui-content div.ui-content-text input.ui-content-text-header-search::-webkit-input-placeholder {
-    color: #BCBCBC;
+    color: #BDBDBD;
 }
 
 div.ui-content div.ui-content-text input.ui-content-text-header-search:-moz-placeholder {
     /* Firefox 18- */
-    color: #363636;
+    color: #BDBDBD;
 }
 
 div.ui-content div.ui-content-text input.ui-content-text-header-search::-moz-placeholder {
     /* Firefox 19+ */
-    color: #363636;
+    color: #BDBDBD;
 }
 
 div.ui-content div.ui-content-text input.ui-content-text-header-search:-ms-input-placeholder {
-    color: #363636;
+    color: #BDBDBD;
 }
 
 div.ui-content div.ui-content-text div.ui-content-text-header-right i {
@@ -250,7 +251,7 @@ div.ui-content div.ui-content-text div.ui-content-text-header-right i {
     padding-left: 12px;
     margin-left: -40px;
     z-index: 1;
-    color: #BCBCBC;
+    color: #BDBDBD;
 }
 
 div.ui-content div.ui-content-text input.ui-content-text-header-search:focus + ul.search-results,
@@ -261,7 +262,7 @@ div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-re
 div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results {
     display: none;
     position: absolute;
-    color: #363636;
+    color: #212121;
     top: 35px;
     left: 0;
     right: 0;
@@ -272,8 +273,8 @@ div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-re
     border-width: 1px;
     overflow: hidden;
     border-radius: 5px;
-    border: 1px solid #BCBCBC;
-    background-color: #f8f8f8;
+    border: 1px solid #BDBDBD;
+    background-color: #FFFFFF;
 }
 
 div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li {
@@ -291,12 +292,11 @@ div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-re
     left: 50%;
     margin-left: -5px;
     border-bottom: 5px outset transparent;
-    border-color: #FF6600;
 }
 
 div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li:hover {
-    color: #F8F8F8;
-    background-color: #363636;
+    color: #FFFFFF;
+    background-color: #4CAF50;
 }
 
 div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-results li span {
@@ -305,7 +305,7 @@ div.ui-content div.ui-content-text div.ui-content-text-header-right ul.search-re
 
 div.ui-content div.ui-divider {
     height: 1px;
-    background-color: #BCBCBC;
+    background-color: #BDBDBD;
     border-bottom: 1px solid #FFF;
     margin: 10px;
 }
@@ -314,17 +314,17 @@ div.ui-content div.ui-divider {
 /** Main data table styles **/
 
 table {
-    background-color: #E1E1E1;
+    background-color: #E9E9E9;
     border-collapse: separate;
     border-radius: 6px;
     border-spacing: 0px;
-    color: #363636;
+    color: #212121;
     font-size: 14px;
     width: 100%;
 }
 
 table thead {
-    background-color: #03A9F4;
+    background-color: #4CAF50;
     color: #F8F8F8;
     font-size: 16px;
 }
@@ -343,11 +343,11 @@ table.selectable tbody tr {
 }
 
 table tr.odd {
-    background-color: #E9E9E9;
+    background-color: #F8F8F8;
 }
 
 table.selectable tbody tr:hover {
-    background-color: #039BE5;
+    background-color: #388E3C;
     color: #F8F8F8;
 }
 
@@ -388,7 +388,7 @@ table tfoot {
 div.ui-schedule {
     position:relative;
     margin:10px;
-    color:#363636;
+    color:#212121;
     height:auto;
     padding-bottom:80px;
 }
@@ -430,7 +430,7 @@ div.ui-schedule div.ui-schedule-timeline li:after {
     left:50px;
     width:calc(100% - 50px);
     height:1px;
-    background:#E9E9E9;
+    background:#E1E1E1;
 }
 
 div.ui-schedule div.ui-schedule-timeline li:last-of-type:after {
@@ -461,8 +461,8 @@ div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group div.ui-sched
     height:50px;
     line-height:50px;
     text-align: center;
-    background-color:#03A9F4;
-    color:#F8F8F8;
+    background-color:#4CAF50;
+    color:#FFFFFF;
     font-weight:700;
 }
 
@@ -472,7 +472,7 @@ div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul {
     overflow:visible;
     padding:0;
     margin:0;
-    border:1px solid #E9E9E9;
+    border:1px solid #E1E1E1;
     background-color:#F8F8F8;
 }
 
@@ -512,7 +512,7 @@ div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group:not(:first-o
 /** Footer and progress bar styles **/
 
 div.ui-footer {
-    background-color: #4F4F4F;
+    background-color: #363636;
     bottom: 0;
     height: 80px;
     position: absolute;
@@ -521,7 +521,7 @@ div.ui-footer {
 
 div.ui-footer div.ui-footer-progress-bar {
     border-radius: 20px;
-    background-color: #363636;
+    background-color: #212121;
     height: 40px;
     margin: 20px;
     position: relative;
@@ -530,6 +530,7 @@ div.ui-footer div.ui-footer-progress-bar {
 }
 
 div.ui-footer div.ui-footer-progress-bar div.ui-footer-start-generation {
+    color:#757575;
     cursor: pointer;
     width: 100%;
     text-align: center;
@@ -547,14 +548,14 @@ div.ui-footer div.ui-footer-progress-bar > span {
     display: block;
     height: 40px;
     border-radius: 20px;
-    background-color: #039BE5;
+    background-color: #4CAF50;
     position: absolute;
     overflow: hidden;
     z-index: 0;
 }
 
 div.ui-footer div.ui-footer-progress-bar > span div.ui-footer-progress-bar-status {
-    color: #01579B;
+    color: #388E3C;
     float: right;
     font-size: 20px;
     line-height: 40px;

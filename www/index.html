@@ -43,70 +43,72 @@
         <div class="ui-modal-tint"></div>
     </div>
 
-    <div class="ui-header">
-        <div class="ui-header-left">
-            <div class="ui-header-logo">
-                <i class="material-icons md-36">schedule</i> UBC Schedule Finder</div>
-        </div>
-        <div class="ui-header-right">
-            <div class="ui-header-button ui-header-button-active">COURSES</div>
-            <div class="ui-header-button">VIEW SCHEDULES</div>
-        </div>
-    </div>
-
-    <div class="ui-content">
-        <div class="ui-content-text">
-            <div class="ui-content-text-header">
-                <div class="ui-content-text-header-left">
-                    Courses
-                </div>
-                <div class="ui-content-text-header-right">
-                    <span class="icon"><i class="material-icons md-24">search</i></span>
-                    <input class="ui-content-text-header-search" type="text" placeholder="Add course...">
-                    <ul class="search-results">
-                    </ul>
-                </div>
+    <div class="ui-container">
+        <div class="ui-header">
+            <div class="ui-header-left">
+                <div class="ui-header-logo">
+                    <i class="material-icons md-36">schedule</i> UBC Schedule Finder</div>
             </div>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra, arcu et pharetra posuere, quam tellus auctor turpis, et rhoncus mauris nisi et lectus.
+            <div class="ui-header-right">
+                <div class="ui-header-button ui-header-button-active">COURSES</div>
+                <div class="ui-header-button">VIEW SCHEDULES</div>
+            </div>
         </div>
-        <div class="ui-divider"></div>
 
-        <div class="ui-content-text">
-            <table class="selectable" id="course-list">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Term</th>
-                        <th>Selected Sections</th>
-                        <th>Combinations</th>
-                    </tr>
-                </thead>
+        <div class="ui-content">
+            <div class="ui-content-text">
+                <div class="ui-content-text-header">
+                    <div class="ui-content-text-header-left">
+                        Courses
+                    </div>
+                    <div class="ui-content-text-header-right">
+                        <span class="icon"><i class="material-icons md-24">search</i></span>
+                        <input class="ui-content-text-header-search" type="text" placeholder="Add course...">
+                        <ul class="search-results">
+                        </ul>
+                    </div>
+                </div>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra, arcu et pharetra posuere, quam tellus auctor turpis, et rhoncus mauris nisi et lectus.
+            </div>
+            <div class="ui-divider"></div>
 
-                <tbody>
-                </tbody>
+            <div class="ui-content-text">
+                <table class="selectable" id="course-list">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Term</th>
+                            <th>Selected Sections</th>
+                            <th>Combinations</th>
+                        </tr>
+                    </thead>
 
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>Total:</td>
-                        <td id="total">0</td>
-                    </tr>
-                </tfoot>
-            </table>
+                    <tbody>
+                    </tbody>
 
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Total:</td>
+                            <td id="total">0</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+            </div>
         </div>
-    </div>
 
-    <div class="ui-footer">
-        <div class="ui-footer-progress-bar">
-            <span style="width:0%">
+        <div class="ui-footer">
+            <div class="ui-footer-progress-bar">
+                <span style="width:0%">
                     <div class="ui-footer-progress-bar-status">75%</div>
                 </span>
-            <div class="ui-footer-start-generation">
-                Find Schedules
+                <div class="ui-footer-start-generation">
+                    Find Schedules
+                </div>
             </div>
         </div>
     </div>
@@ -115,7 +117,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
     <script src="js/UBCCalendarAPI.js"></script>
     <script src="js/Scheduler.js"></script>
-    <script src="js/UI.js"></script>
+    <script src="js/UICourses.js"></script>
 </body>
 
 </html>

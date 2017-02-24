@@ -1,10 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+
+html {
+    height:100%;
+}
+
 body {
     color: #DDD;
     background-color: #E9E9E9;
     font-family: Montserrat, sans-serif;
     margin: 0;
     padding: 0;
+    height:100%;
 }
 
 .material-icons.md-18 {
@@ -49,7 +55,7 @@ div.ui-modal div.ui-modal-window {
 }
 
 div.ui-modal div.ui-modal-window div.ui-modal-window-body {
-    max-height:calc(100vh - 410px);
+    max-height:calc(80vh - 200px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -99,6 +105,12 @@ div.ui-modal div.ui-modal-tint {
     height: 100%;
     opacity: 0.5;
     width: 100%;
+}
+
+div.ui-container {
+    position:relative;
+    min-height:calc(100% - 10px);
+    padding-bottom:10px;
 }
 
 div.ui-header {
@@ -339,7 +351,6 @@ table.selectable tbody tr:hover {
     color: #F8F8F8;
 }
 
-
 /* top-left border-radius */
 
 table tr:first-child th:first-child {
@@ -369,6 +380,132 @@ table tfoot tr:last-child td:last-child {
 
 table tfoot {
     font-weight: 700;
+}
+
+
+/** Schedule style **/
+
+div.ui-schedule {
+    position:relative;
+    margin:10px;
+    color:#363636;
+    height:auto;
+    padding-bottom:80px;
+}
+
+div.ui-schedule div.ui-schedule-timeline {
+    display:block;
+    position:absolute;
+    top:50px;
+    left:0;
+    width:100%;
+    z-index:1;
+}
+
+div.ui-schedule div.ui-schedule-timeline ul {
+    padding:0;
+    margin:0;
+}
+
+div.ui-schedule div.ui-schedule-timeline li {
+    list-style:none;
+    padding:0;
+    margin:0;
+    position:relative;
+    height:50px;
+    font-size:14px;
+}
+
+div.ui-schedule div.ui-schedule-timeline li span {
+    display:inline-block;
+    -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+}
+
+div.ui-schedule div.ui-schedule-timeline li:after {
+    content:'';
+    position:absolute;
+    bottom:0;
+    left:50px;
+    width:calc(100% - 50px);
+    height:1px;
+    background:#E9E9E9;
+}
+
+div.ui-schedule div.ui-schedule-timeline li:last-of-type:after {
+    display:none;
+}
+
+div.ui-schedule div.ui-schedule-events {
+    min-height:750px;
+    width:calc(100% - 100px);
+    margin:0px 50px;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group {
+    position: relative;
+    width:20%;
+    float:left;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group:first-of-type div.ui-schedule-events-group-info {
+    border-top-left-radius: 6px;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group:last-of-type div.ui-schedule-events-group-info {
+    border-top-right-radius: 6px;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group div.ui-schedule-events-group-info {
+    height:50px;
+    line-height:50px;
+    text-align: center;
+    background-color:#03A9F4;
+    color:#F8F8F8;
+    font-weight:700;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul {
+    height:700px;
+    display:block;
+    overflow:visible;
+    padding:0;
+    margin:0;
+    border:1px solid #E9E9E9;
+    background-color:#F8F8F8;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul li {
+    position:absolute;
+    width:100%;
+    min-height:calc(50px - 4px);
+    list-style: none;
+    color:#006FA1;
+    text-align:center;
+    background-color:#D4EAF4;
+    z-index:2;
+    border-bottom:4px solid #B9E2F4;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul li div.contents {
+    position:absolute;
+    width:100%;
+    top:50%;
+    transform: translateY(-50%);
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul li div.contents div.title {
+    font-weight:700;
+    font-size:16px;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul li div.contents div.room {
+    font-size:12px;
+}
+
+div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group:not(:first-of-type) > ul {
+    border-left-width:0;
 }
 
 

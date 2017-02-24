@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>UBC Schedule Finder</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" media="(max-width: 800px)" href="css/mobile-styles.css" />
+</head>
+
+<body>
+    <div class="ui-modal" id="course">
+        <div class="ui-modal-window">
+            <div class="ui-modal-window-header">
+                <div class="ui-modal-window-header-title">CPSC 210</div>
+                <div class="ui-modal-window-header-button" id="modal-close"><i class="material-icons md-36">check</i></div>
+                <div class="ui-modal-window-header-button" id="modal-delete"><i class="material-icons md-36">delete</i></div>
+            </div>
+            <div class="ui-modal-window-body">
+                <table id="section-list">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Status</th>
+                            <th>ID</th>
+                            <th>Type</th>
+                            <th>Term</th>
+                            <th>Days</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="ui-modal-tint"></div>
+    </div>
+
+    <div class="ui-container">
+        <div class="ui-header">
+            <div class="ui-header-left">
+                <div class="ui-header-logo">
+                    <i class="material-icons md-36">schedule</i> UBC Schedule Finder</div>
+            </div>
+            <div class="ui-header-right">
+                <div class="ui-header-button">COURSES</div>
+                <div class="ui-header-button ui-header-button-active">VIEW SCHEDULES</div>
+            </div>
+        </div>
+
+        <div class="ui-content">
+            <div class="ui-content-text">
+                <div class="ui-content-text-header">
+                    <div class="ui-content-text-header-left">
+                        View Schedules
+                    </div>
+                </div>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. In pharetra, arcu et pharetra posuere, quam tellus auctor turpis, et rhoncus mauris nisi et lectus.
+            </div>
+            <div class="ui-divider"></div>
+            <div class="ui-content-text">
+                <table class="selectable" id="schedule-list">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Average Start Time</th>
+                            <th>Average End Time</th>
+                            <th>First Term</th>
+                            <th>Second Term</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>09:45</td>
+                            <td>15:32</td>
+                            <td>CPSC 110, BIOL 111, CHEM 121</td>
+                            <td>CPSC 121, MATH 101, PHYS 101</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="ui-divider"></div>
+            <div class="ui-schedule">
+                <div class="ui-schedule-timeline">
+                    <ul>
+                        <li><span>08:00</span></li>
+                        <li><span>09:00</span></li>
+                        <li><span>10:00</span></li>
+                        <li><span>11:00</span></li>
+                        <li><span>12:00</span></li>
+                        <li><span>13:00</span></li>
+                        <li><span>14:00</span></li>
+                        <li><span>15:00</span></li>
+                        <li><span>16:00</span></li>
+                        <li><span>17:00</span></li>
+                        <li><span>18:00</span></li>
+                        <li><span>19:00</span></li>
+                        <li><span>20:00</span></li>
+                        <li><span>21:00</span></li>
+                    </ul>
+                </div>
+
+                <div class="ui-schedule-events">
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Monday</div>
+                        <ul>
+                            <li data-start="09:30" data-end="10:30">
+                                <div class="contents">
+                                    <div class="title">CPSC 110 101</div>
+                                    <div class="room">DMP - 310</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Tuesday</div>
+                        <ul>
+                            <li data-start="12:15" data-end="14:45">
+                                <div class="contents">
+                                    <div class="title">MATH 101 202</div>
+                                    <div class="room">MATX 123</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Wednesday</div>
+                        <ul>
+                        
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Thursday</div>
+                        <ul>
+                        
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Friday</div>
+                        <ul>
+                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="ui-footer">
+            <div class="ui-footer-progress-bar">
+                <span style="width:0%">
+                    <div class="ui-footer-progress-bar-status">75%</div>
+                </span>
+                <div class="ui-footer-start-generation">
+                    Find Schedules
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first then our own JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+    <script src="js/UBCCalendarAPI.js"></script>
+    <script src="js/Scheduler.js"></script>
+    <script src="js/UISchedules.js"></script>
+</body>
+
+</html>

@@ -57,4 +57,9 @@ div.ui-content div.ui-content-text div.ui-content-text-header-right {
     
     div.ui-header div.ui-header-button {
         font-size:12px;
+    }
+    
+    table thead {
+        font-size:12px;
+    }
 }

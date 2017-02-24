@@ -19,6 +19,8 @@ var UI = (function ($) {
 
         $("#section-list tbody").on("click", "input", toggleSection);
         
+        $(".ui-footer-start-generation").click(findSchedules);
+        
         // Load in all the past courses
         loadCourses();
     });
@@ -168,7 +170,7 @@ var UI = (function ($) {
         for (var i = 0; i < aCourses.length; i++)
             if (aCourses[i].sCourseID == scSectionContainer.sCourseID) return;
 
-            // Add this course ID to the list
+        // Add this course ID to the list
         aCourses.push(scSectionContainer);
 
         // Update the data
@@ -451,6 +453,17 @@ var UI = (function ($) {
             }
         }
         return aMeetingSlots;
+    }
+    
+    /**
+     * Starts Scheduler.js's generation module using the current set of courses currently in the table.
+     */
+    function findSchedules() {
+        // Create an array of only course IDs to pass to the generator.
+        var aCourseIDs = [];
+        for(var i = 0; i < aCourses.length; i++) aCourseIDs.push(aCourses[i].sCourseID);
+        
+        Generator.startGenerating(aCourseIDs);
     }
     
     /**

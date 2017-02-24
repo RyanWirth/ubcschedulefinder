@@ -346,7 +346,8 @@ table tr.odd {
     background-color: #F8F8F8;
 }
 
-table.selectable tbody tr:hover {
+table.selectable tbody tr:hover,
+table.selectable tbody tr.selected {
     background-color: #388E3C;
     color: #F8F8F8;
 }
@@ -428,7 +429,7 @@ div.ui-schedule div.ui-schedule-timeline li:after {
     position:absolute;
     bottom:0;
     left:50px;
-    width:calc(100% - 50px);
+    width:calc(100% - 100px);
     height:1px;
     background:#E1E1E1;
 }
@@ -481,11 +482,11 @@ div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul li {
     width:100%;
     min-height:calc(50px - 4px);
     list-style: none;
-    color:#006FA1;
+    color:#4CAF50;
     text-align:center;
-    background-color:#D4EAF4;
+    background-color: #C8E6C9;
     z-index:2;
-    border-bottom:4px solid #B9E2F4;
+    border-bottom:4px solid #B9DFBA;
 }
 
 div.ui-schedule div.ui-schedule-events div.ui-schedule-events-group > ul li div.contents {

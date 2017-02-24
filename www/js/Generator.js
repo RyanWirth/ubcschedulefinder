@@ -1,56 +1,3 @@
-var Scheduler = (function () {
-    var aCourseIDs = [];
-    var aWaitingOnCourseData = [];
-
-    function addCourses(aCourses) {
-        for (var i in aCourses) {
-            // Add the course ID to the waiting list before adding the course - this is so that
-            // we will wait until *all* the data is loaded before proceeding.
-            aWaitingOnCourseData.push(aCourses[i]);
-        }
-
-        // Now start loading every course.
-        for (var i in aCourses) addCourse(aCourses[i]);
-    }
-
-    /**
-     * Adds the given course to the list of courses to take and starts retrieving its data.
-     */
-    function addCourse(sCourseID) {
-        if (aCourseIDs.includes(sCourseID)) return;
-
-        console.log("[" + sCourseID + "]: Added.");
-
-        // Keep track of what has been added and what is still loading...
-        aCourseIDs.push(sCourseID);
-        if (!aWaitingOnCourseData.includes(sCourseID)) aWaitingOnCourseData.push(sCourseID);
-
-        // Start the loading process.
-        UBCCalendarAPI.getSections(addCourse_loaded, sCourseID);
-    }
-
-    function addCourse_loaded(aSections, sCourseID) {
-        // Keep track of the loaded course data--remove this one from the pending list
-        console.log("[" + sCourseID + "]: Sections loaded (callback). Found " + aSections.length);
-        var iWaitingOnCourseData = aWaitingOnCourseData.indexOf(sCourseID);
-        if (iWaitingOnCourseData > -1) aWaitingOnCourseData.splice(iWaitingOnCourseData, 1);
-
-        // If we're out of courses to load, start the generation process.
-        if (aWaitingOnCourseData.length == 0) Generator.startGenerating();
-    }
-
-    function getCourseIDs() {
-        return aCourseIDs;
-    }
-
-    return {
-        addCourse: addCourse,
-        addCourses: addCourses,
-        getCourseIDs: getCourseIDs
-    }
-})();
-
-
 var Generator = (function () {
     var aCourseIDs = []; // An array containing all of the course IDs to be scheduled
     var aPossibleSchedules = []; // An array containing arrays of possible schedules
@@ -58,10 +5,36 @@ var Generator = (function () {
     var aCurrentIndices = [];
 
     var bKillThread = false;
+   // var stSortType = SortType.SHORTEST_DAY;
+    
+    // An enumeration for the currently selected sort type
+    var SortType = {
+        SHORTEST_DAY: 1,
+        LATEST_START_TIME: 2,
+        EARLIEST_END_TIME: 3,
+    };
+    
+    /**
+     * A datatype for the possible schedules array. Contains the courses and some pre-calculated
+     * metadata for sorting the schedules.
+     */
+    function PossibleSchedule(aCourses, nAverageStartTime, nAverageEndTime) {
+        this.aCourses = aCourses;
+        this.nAverageStartTime = nAverageStartTime;
+        this.nAverageEndTime = nAverageEndTime;
+    }
 
-    function startGenerating() {
-        // Copy the section data into this module.
-        aCourseIDs = Scheduler.getCourseIDs().slice();
+    /**
+     * Begins generating schedules given an array of course IDs.
+     *
+     * @param _aCourseIDs An array of course IDs to generate schedules from
+     */
+    function startGenerating(_aCourseIDs) {
+        aCourseIDs = _aCourseIDs;
+        
+        // Empty the current indices and schedule array
+        aCurrentIndices = [];
+        aCurrentSchedule = [];
 
         // Find the total number of schedules
         for (var i = 0; i < aCourseIDs.length; i++) {
@@ -69,6 +42,8 @@ var Generator = (function () {
             aCurrentIndices.push(0); // Initialize this index to 0
             aCurrentSchedule.push([]);
         }
+        
+        console.log("[Generator] Using courses: " + aCourseIDs);
 
         startThread();
     }
@@ -93,6 +68,7 @@ var Generator = (function () {
             var sPossibleSchedule = "";
             for (var i = 0; i < aCurrentSchedule.length; i++)
                 for (var j = 0; j < aCurrentSchedule[i].length; j++) {
+                    if(aCurrentSchedule[i][j] == null) continue;
                     aPossibleSchedule.push(aCurrentSchedule[i][j]);
                     sPossibleSchedule += aCurrentSchedule[i][j].sCourseID + "-" + aCurrentSchedule[i][j].sKey + " (" + aCurrentSchedule[i][j].sActivity + "), ";
                 }
@@ -109,6 +85,8 @@ var Generator = (function () {
 
     function scheduleCourseSections(iCourseID, iSectionID) {
         var scSectionContainer = UBCCalendarAPI.getSectionContainer(aCourseIDs[iCourseID]);
+        
+        console.log("[Generator] Scheduling " + iCourseID + "-" + iSectionID + ": " + aCourseIDs[iCourseID]);;
 
         if (iSectionID >= scSectionContainer.aSections.length) {
             // We're out of section types for this course, so we'll go to the next one
@@ -116,20 +94,37 @@ var Generator = (function () {
             return;
         }
 
-        // We still have sections types left to test
+        // We still have sections types left to schedule
+        var bSectionSelected = false;
         var aSections = scSectionContainer.aSections[iSectionID];
         for (var i = 0; i < aSections.length; i++) {
             var sSection = aSections[i];
+            
+            console.log("[Generator] Iterating over " + sSection.sKey);
 
             // Check for selection and conflicts
             if (sSection.bSelected == false) continue;
-            else if (doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID)) continue;
+            
+            // This section is selected, so set the flag to not skip this section
+            bSectionSelected = true;
+            
+            if (doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID)) continue;
 
             // No conflict, add it and let's check the next one
             if (aCurrentSchedule[iCourseID].length <= iSectionID) aCurrentSchedule[iCourseID].push(sSection);
             else aCurrentSchedule[iCourseID][iSectionID] = sSection;
 
             // Recurse, adding the next set of section types for the current course ID
+            scheduleCourseSections(iCourseID, iSectionID + 1);
+        }
+        
+        if(!bSectionSelected)
+        {
+            // There are no sections to go in the current iSectionID slot, so we'll put a null element there instead
+            if(aCurrentSchedule[iCourseID].length <= iSectionID) aCurrentSchedule[iCourseID].push(null);
+            else aCurrentSchedule[iCourseID][iSectionID] = null;
+            
+            // No sections of this type were selected, so let's skip it
             scheduleCourseSections(iCourseID, iSectionID + 1);
         }
     }
@@ -162,6 +157,8 @@ var Generator = (function () {
      * @return True if the sections conflict, false otherwise.
      */
     function doSectionsConflict(sSection1, sSection2) {
+        if(sSection1 == null || sSection2 == null) return false;
+        
         // Iterate over all of sSection1's meetings
         for (var i in sSection1.aMeetings) {
             var mMeeting1 = sSection1.aMeetings[i];

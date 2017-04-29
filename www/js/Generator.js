@@ -46,7 +46,7 @@ var Generator = (function () {
             var aCourseIndices = [];
             for(var j = 0; j < scSectionContainer.aSections.length; j++) {
                 iTotalPossibilities *= scSectionContainer.aSections[j].length;
-                aCourseIndices.push(0);
+                aCourseIndices.push([0, false]);
             }
             
             aCurrentIndices.push(aCourseIndices);
@@ -135,11 +135,11 @@ var Generator = (function () {
         console.log("[Generator] Scheduling section " + iCourseID + "-" + iSectionID + ": " + aCourseIDs[iCourseID]);
 
         // We still have sections types left to schedule
-        var bSectionSelected = false;
+        var bSectionSelected = aCurrentIndices[iCourseID][iSectionID][1];
         var aSections = scSectionContainer.aSections[iSectionID];
-        for (var i = aCurrentIndices[iCourseID][iSectionID]; i < aSections.length; i++) {
+        for (var i = aCurrentIndices[iCourseID][iSectionID][0]; i < aSections.length; i++) {
             var sSection = aSections[i];
-            aCurrentIndices[iCourseID][iSectionID] = i; // Save the current array
+            aCurrentIndices[iCourseID][iSectionID][0] = i; // Save the current array
             if(iCheckedPossibilities - iCheckedPossibilitiesAtLastKill > 1000) {
                 bKillThread = true;
                 return;
@@ -155,6 +155,7 @@ var Generator = (function () {
             
             // This section is selected, so set the flag to not ignore this section
             bSectionSelected = true;
+			aCurrentIndices[iCourseID][iSectionID][1] = true;
             
             // If another section type of this course has already been scheduled, make sure it matches
             if((iSectionID > 0) && (aCurrentSchedule[iCourseID][0] == null || !doTermsOverlap(sSection.sTerm, aCurrentSchedule[iCourseID][0].sTerm))) {
@@ -179,13 +180,11 @@ var Generator = (function () {
             if(bKillThread) return;
 			else {
 				// Reset all the current indices counters after this to zero
-				for(var j = iCourseID; j < aCurrentIndices.length; j++) {
-					for(var k = 0; k < aCurrentIndices[j].length; k++) {
-						aCurrentIndices[j][k] = 0;
-					}
-				}
+				resetIndicesAfterIDs(iCourseID, iSectionID);
 			}
         }
+		
+		aCurrentIndices[iCourseID][iSectionID][0] = aSections.length;
         
         if(!bSectionSelected)
         {
@@ -197,6 +196,26 @@ var Generator = (function () {
             scheduleCourseSections(iCourseID, iSectionID + 1);
         }
     }
+	
+	/**
+	 * Resets the progress arrays after the given IDs to their original state: index 0 and section selected false.
+	 *
+	 * @param iCourseID  The current course ID
+	 * @param iSectionID The current section ID
+	 */
+	function resetIndicesAfterIDs(iCourseID, iSectionID) {
+		for(var k = iSectionID + 1; k < aCurrentIndices[iCourseID].length; k++) {
+			aCurrentIndices[iCourseID][k][0] = 0;
+			aCurrentIndices[iCourseID][k][1] = false;
+		}
+		
+		for(var j = iCourseID + 1; j < aCurrentIndices.length; j++) {
+			for(var k = 0; k < aCurrentIndices[j].length; k++) {
+				aCurrentIndices[j][k][0] = 0;
+				aCurrentIndices[j][k][1] = false;
+			}
+		}
+	}
 
     /**
      * Returns true if the given section conflicts with all the other sections

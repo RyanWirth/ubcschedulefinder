@@ -248,7 +248,8 @@ var UBCCalendarAPI = (function ($, dDate) {
         if (sStatus == "Blocked" ||
             sStatus == "STT" ||
             sStatus == "Full" ||
-            sStatus == "Restricted")
+            sStatus == "Restricted" ||
+		    sStatus == "Unreleased")
             bSelected = false;
 
         // Assemble instructor data. When there are multiple instructors,

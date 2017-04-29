@@ -4,6 +4,7 @@ var UI = (function ($) {
     var bCoursesModified = false;
     var iSchedulesGenerated = 0;
     var scCurrentCourse = null;
+	var bModalCourseModified = false;
 
     $(function () {
         // Load the departments
@@ -246,7 +247,7 @@ var UI = (function ($) {
         updateTotalPossibilities();
         
         // Delete this course's section data from the API
-        UBCCalendarAPI.deleteCourseFromCache(scSectionContainer.sCourseID);
+        //UBCCalendarAPI.deleteCourseFromCache(scSectionContainer.sCourseID); // Removed to allow schedule section caching
         
         // Save the new list
         saveCourses();
@@ -361,6 +362,8 @@ var UI = (function ($) {
 
         var sCourseName = $(this).find("#course-name").text();
         var aStringData = sCourseName.split(" ");
+		
+		bModalCourseModified = false;
 
         // Update the modal window title to be the course name
         $("#course .ui-modal-window-header-title").text(sCourseName);
@@ -381,6 +384,7 @@ var UI = (function ($) {
         
         removeCourseFromList(scCurrentCourse);
         scCurrentCourse = null;
+		bModalCourseModified = true;
         
         hideCourseModalWindow();
     }
@@ -394,7 +398,12 @@ var UI = (function ($) {
         scCurrentCourse = null;
         
         // Save the changes in the UBCCalendarAPI
-        UBCCalendarAPI.saveCache();
+        if(bModalCourseModified) {
+			UBCCalendarAPI.saveCache();
+			
+			// Indicate that the course list has changed
+			saveGenerationState(bSchedulesGenerated, true, iSchedulesGenerated);
+		}
 
         $("#course").css("visibility", "hidden");
         $("#course").css("opacity", "0");
@@ -453,6 +462,8 @@ var UI = (function ($) {
      * status of the clicked section inside the modal window.
      */
     function toggleSection() {
+		bModalCourseModified = true;
+		
         for (var i = 0; i < scCurrentCourse.aSections.length; i++) {
             for (var j = 0; j < scCurrentCourse.aSections[i].length; j++) {
                 // Check each section
@@ -476,12 +487,8 @@ var UI = (function ($) {
             var mMeeting = sSection.aMeetings[k];
 
             // Parse the start and end times into a time string
-            var iStartHour = Math.floor(mMeeting.nStartTime);
-            var iStartMinute = (mMeeting.nStartTime - iStartHour) * 60;
-            var iEndHour = Math.floor(mMeeting.nEndTime);
-            var iEndMinute = (mMeeting.nEndTime - iEndHour) * 60;
-            var sStartTime = (iStartHour < 10 ? "0" : "") + iStartHour + ":" + (iStartMinute < 10 ? "0" : "") + iStartMinute;
-            var sEndTime = (iEndHour < 10 ? "0" : "") + iEndHour + ":" + (iEndMinute < 10 ? "0" : "") + iEndMinute;
+			var sStartTime = convertDecimalTimeToString(mMeeting.nStartTime);
+			var sEndTime   = convertDecimalTimeToString(mMeeting.nEndTime);
 
             // Find a meeting slot to put this in
             var bFoundSlot = false;
@@ -506,6 +513,20 @@ var UI = (function ($) {
         }
         return aMeetingSlots;
     }
+	
+	/**
+	 * Converts a time given as a number (eg. 14.5) into a formatted 24-hour time string (eg. 14:30)
+	 *
+	 * @param nTime The time as a decimal
+	 * @return      The time as a string
+	 */
+	function convertDecimalTimeToString(nTime) {
+		var iHour = Math.floor(nTime);
+		var iMinute = Math.floor((nTime - iHour) * 60);
+		var sTime = (iHour < 10 ? "0" : "") + iHour + ":" + (iMinute < 10 ? "0" : "") + iMinute;
+		
+		return sTime;
+	}
     
     /**
      * Starts Scheduler.js's generation module using the current set of courses currently in the table.
@@ -520,6 +541,12 @@ var UI = (function ($) {
         // Create an array of only course IDs to pass to the generator.
         var aCourseIDs = [];
         for(var i = 0; i < aCourses.length; i++) aCourseIDs.push(aCourses[i].sCourseID);
+		
+		// If the user hasn't added any courses, alert them
+		if(aCourseIDs.length == 0) {
+			alert("Please add one or more courses first.");
+			return;
+		}
         
 		updateFindSchedulesStatus(0, 0);
         Generator.startGenerating(aCourseIDs, updateFindSchedulesStatus);

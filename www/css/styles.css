@@ -391,8 +391,20 @@ div.ui-schedule {
     margin:10px;
     color:#212121;
     height:auto;
-    padding-bottom:80px;
+	padding-bottom:20px;
     cursor:default;
+}
+
+div.ui-schedule:last-child {
+	padding-bottom:80px;
+}
+
+div.ui-schedule div.ui-schedule-title {
+	width:100%;
+	padding:10px;
+	font-size:24px;
+	font-weight:700;
+	text-align: center;
 }
 
 div.ui-schedule div.ui-schedule-timeline {

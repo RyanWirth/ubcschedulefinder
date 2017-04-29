@@ -10,15 +10,7 @@ var Generator = (function () {
     var iCheckedPossibilitiesAtLastKill = 0;
 
     var bKillThread = false;
-   // var stSortType = SortType.SHORTEST_DAY;
-    
-    // An enumeration for the currently selected sort type
-    var SortType = {
-        SHORTEST_DAY: 1,
-        LATEST_START_TIME: 2,
-        EARLIEST_END_TIME: 3,
-    };
-    
+	
     /**
      * A datatype for the possible schedules array. Contains the courses and some pre-calculated
      * metadata for sorting the schedules.
@@ -84,7 +76,19 @@ var Generator = (function () {
 	function stopThread() {
 		console.log("[Generator] Stopped thread.");
 	}
+	
+	/**
+	 * Saves all the possible schedules found so far to localStorage as a stringified JSON object.
+	 */
+	function saveSchedules() {
+		localStorage.setItem("aPossibleSchedules", JSON.stringify(aPossibleSchedules));
+	}
 
+	/**
+	 * Schedules all the course's relevant activities at the given course depth (ID).
+	 *
+	 * @param iCourseID The course depth to schedule
+	 */
     function scheduleCourse(iCourseID) {
         if (iCourseID >= aCourseIDs.length) {
             // We are out of courses to schedule - great!
@@ -94,7 +98,8 @@ var Generator = (function () {
             for (var i = 0; i < aCurrentSchedule.length; i++)
                 for (var j = 0; j < aCurrentSchedule[i].length; j++) {
                     if(aCurrentSchedule[i][j] == null) continue;
-                    aPossibleSchedule.push(aCurrentSchedule[i][j]);
+					var aCourseSection = [aCurrentSchedule[i][j].sCourseID, aCurrentSchedule[i][j].sKey];
+					aPossibleSchedule.push(aCourseSection);
                     sPossibleSchedule += aCurrentSchedule[i][j].sCourseID + "-" + aCurrentSchedule[i][j].sKey + " (" + aCurrentSchedule[i][j].sActivity + "), ";
                 }
 
@@ -104,22 +109,30 @@ var Generator = (function () {
 
             // Add the copied array to the array of all possible ones, then return and continue.
             aPossibleSchedules.push(aPossibleSchedule);
+			
+			saveSchedules();
             return;
         }
 
         scheduleCourseSections(iCourseID, 0);
     }
 
+	/**
+	 * Attempts to schedule all the possible combinations of a course's particular activity type.
+	 *
+	 * @param iCourseID  The course depth to schedule
+	 * @param iSectionID The activity depth to schedule
+	 */
     function scheduleCourseSections(iCourseID, iSectionID) {
         var scSectionContainer = UBCCalendarAPI.getSectionContainer(aCourseIDs[iCourseID]);
-        
-        console.log("[Generator] Scheduling " + iCourseID + "-" + iSectionID + ": " + aCourseIDs[iCourseID]);;
 
         if (iSectionID >= scSectionContainer.aSections.length) {
             // We're out of section types for this course, so we'll go to the next one
             scheduleCourse(iCourseID + 1);
             return;
         }
+		
+        console.log("[Generator] Scheduling section " + iCourseID + "-" + iSectionID + ": " + aCourseIDs[iCourseID]);
 
         // We still have sections types left to schedule
         var bSectionSelected = false;
@@ -157,11 +170,21 @@ var Generator = (function () {
             // No conflict, add it and let's check the next one
             if (aCurrentSchedule[iCourseID].length <= iSectionID) aCurrentSchedule[iCourseID].push(sSection);
             else aCurrentSchedule[iCourseID][iSectionID] = sSection;
+			
+			console.log("[Generator] Adding " + sSection.sKey);
 
             // Recurse, adding the next set of section types for the current course ID
             scheduleCourseSections(iCourseID, iSectionID + 1);
             
             if(bKillThread) return;
+			else {
+				// Reset all the current indices counters after this to zero
+				for(var j = iCourseID; j < aCurrentIndices.length; j++) {
+					for(var k = 0; k < aCurrentIndices[j].length; k++) {
+						aCurrentIndices[j][k] = 0;
+					}
+				}
+			}
         }
         
         if(!bSectionSelected)
@@ -176,7 +199,13 @@ var Generator = (function () {
     }
 
     /**
-     *
+     * Returns true if the given section conflicts with all the other sections
+	 * scheduled so far.
+	 *
+	 * @param sSection   The Section object to check for collisions
+	 * @param iCourseID  The current course depth
+	 * @param iSectionID The current section activity depth
+	 * @return True if the section conflicts, false otherwise
      */
     function doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID) {
         if (iCourseID == 0 && iSectionID == 0) return false; // Nothing has been added yet, so the answer is no
@@ -200,7 +229,7 @@ var Generator = (function () {
      *
      * @param sSection1 The first Section object to check
      * @param sSection2 The second Section object to check
-     * @return True if the sections conflict, false otherwise.
+     * @return True if the sections conflict, false otherwise
      */
     function doSectionsConflict(sSection1, sSection2) {
         if(sSection1 == null || sSection2 == null) return false;

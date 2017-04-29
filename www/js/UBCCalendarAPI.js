@@ -356,6 +356,28 @@ var UBCCalendarAPI = (function ($, dDate) {
         if (oSections.hasOwnProperty(sCourseID)) return oSections[sCourseID];
         else return null;
     }
+	
+	/**
+	 * Returns a Section given a course ID and a section key.
+	 *
+	 * @param sCourseID The course ID for the section
+	 * @param sKey      The section key
+	 * @return          A Section
+	 */
+	function getSection(sCourseID, sKey) {
+		var scSectionContainer = getSectionContainer(sCourseID);
+		
+		if(!scSectionContainer) return null;
+		else {
+			for(var i = 0; i < scSectionContainer.aSections.length; i++) {
+				for(var j = 0; j < scSectionContainer.aSections[i].length; j++) {
+					if(scSectionContainer.aSections[i][j].sKey == sKey) return scSectionContainer.aSections[i][j];
+				}
+			}
+		}
+		
+		return null;
+	}
 
     /**
      * Calls fCallback with an array of Departments whose keys starts with the given sText.
@@ -469,6 +491,7 @@ var UBCCalendarAPI = (function ($, dDate) {
         getCourses: getCourses,
         getSections: getSections,
         getSectionContainer: getSectionContainer,
+	    getSection: getSection,
         getDepartmentsStartingWith: getDepartmentsStartingWith,
         getCoursesStartingWith: getCoursesStartingWith,
         saveCache:saveCache,

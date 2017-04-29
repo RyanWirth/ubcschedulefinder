@@ -78,13 +78,6 @@
                     </thead>
 
                     <tbody>
-                        <tr class="selected">
-                            <td>1</td>
-                            <td>09:45</td>
-                            <td>15:32</td>
-                            <td>CPSC 110, BIOL 111, CHEM 121</td>
-                            <td>CPSC 121, MATH 101, PHYS 101</td>
-                        </tr>
                     </tbody>
                     
                     <tfoot>
@@ -93,13 +86,14 @@
                             <td></td>
                             <td></td>
                             <td>Total:</td>
-                            <td id="total">1</td>
+                            <td id="total">0</td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
             <div class="ui-divider"></div>
-            <div class="ui-schedule">
+            <div id="term-1" class="ui-schedule">
+            	<div class="ui-schedule-title">Term 1</div>
                 <div class="ui-schedule-timeline">
                     <ul>
                         <li><span>08:00</span></li>
@@ -122,7 +116,7 @@
                 <div class="ui-schedule-events">
                     <div class="ui-schedule-events-group">
                         <div class="ui-schedule-events-group-info">Monday</div>
-                        <ul>
+                        <ul id="list-mon">
                             <li data-start="09:30" data-end="10:30">
                                 <div class="contents">
                                     <div class="title">CPSC 110 101</div>
@@ -133,7 +127,7 @@
                     </div>
                     <div class="ui-schedule-events-group">
                         <div class="ui-schedule-events-group-info">Tuesday</div>
-                        <ul>
+                        <ul id="list-tue">
                             <li data-start="12:15" data-end="14:45">
                                 <div class="contents">
                                     <div class="title">MATH 101 202</div>
@@ -144,19 +138,83 @@
                     </div>
                     <div class="ui-schedule-events-group">
                         <div class="ui-schedule-events-group-info">Wednesday</div>
-                        <ul>
+                        <ul id="list-wed">
                         
                         </ul>
                     </div>
                     <div class="ui-schedule-events-group">
                         <div class="ui-schedule-events-group-info">Thursday</div>
-                        <ul>
+                        <ul id="list-thu">
                         
                         </ul>
                     </div>
                     <div class="ui-schedule-events-group">
                         <div class="ui-schedule-events-group-info">Friday</div>
-                        <ul>
+                        <ul id="list-fri">
+                        
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="term-2" class="ui-schedule">
+               	<div class="ui-schedule-title">Term 2</div>
+                <div class="ui-schedule-timeline">
+                    <ul>
+                        <li><span>08:00</span></li>
+                        <li><span>09:00</span></li>
+                        <li><span>10:00</span></li>
+                        <li><span>11:00</span></li>
+                        <li><span>12:00</span></li>
+                        <li><span>13:00</span></li>
+                        <li><span>14:00</span></li>
+                        <li><span>15:00</span></li>
+                        <li><span>16:00</span></li>
+                        <li><span>17:00</span></li>
+                        <li><span>18:00</span></li>
+                        <li><span>19:00</span></li>
+                        <li><span>20:00</span></li>
+                        <li><span>21:00</span></li>
+                    </ul>
+                </div>
+
+                <div class="ui-schedule-events">
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Monday</div>
+                        <ul id="list-mon">
+                            <li data-start="09:30" data-end="10:30">
+                                <div class="contents">
+                                    <div class="title">CPSC 110 101</div>
+                                    <div class="room">DMP - 310</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Tuesday</div>
+                        <ul id="list-tue">
+                            <li data-start="12:15" data-end="14:45">
+                                <div class="contents">
+                                    <div class="title">MATH 101 202</div>
+                                    <div class="room">MATX 123</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Wednesday</div>
+                        <ul id="list-wed">
+                        
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Thursday</div>
+                        <ul id="list-thu">
+                        
+                        </ul>
+                    </div>
+                    <div class="ui-schedule-events-group">
+                        <div class="ui-schedule-events-group-info">Friday</div>
+                        <ul id="list-fri">
                         
                         </ul>
                     </div>
@@ -166,21 +224,12 @@
 
 
         <div class="ui-footer">
-            <div class="ui-footer-progress-bar">
-                <span style="width:0%">
-                    <div class="ui-footer-progress-bar-status">75%</div>
-                </span>
-                <div class="ui-footer-start-generation">
-                    Find Schedules
-                </div>
-            </div>
         </div>
     </div>
 
     <!-- jQuery first then our own JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
     <script src="js/UBCCalendarAPI.js"></script>
-    <script src="js/Scheduler.js"></script>
     <script src="js/UISchedules.js"></script>
 </body>
 

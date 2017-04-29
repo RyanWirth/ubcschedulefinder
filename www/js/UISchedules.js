@@ -2,6 +2,7 @@ var UI = (function($) {
 	var aPossibleSchedules = [];
 	var aSortedSchedules = [];
 	var iCurrentScheduleID = 0;
+	var iShowingSchedules = 0;
     
     $(function() {
         // Load in the first schedules
@@ -14,17 +15,20 @@ var UI = (function($) {
 		if(aSortedSchedules.length > 0) displaySchedule(aSortedSchedules[0].iID);
         
         $("#schedule-list tbody").on("click", "tr", showSchedule);
+		$("#show-more").click(showMoreSchedules);
     });
 	
 	/**
 	 * For sorting schedules while retaining their ID so they may be looked up from aPossibleSchedules.
 	 */
-	function Schedule(iID, nAverageStartTime, nAverageEndTime, sFirstTermCourses, sSecondTermCourses) {
+	function Schedule(iID, nAverageStartTime, nAverageEndTime, sFirstTermCourses, sSecondTermCourses, nFirstTermHours, nSecondTermHours) {
         this.iID = iID;
 		this.nAverageStartTime = nAverageStartTime;
 		this.nAverageEndTime = nAverageEndTime;
 		this.sFirstTermCourses = sFirstTermCourses;
 		this.sSecondTermCourses = sSecondTermCourses;
+		this.nFirstTermHours = nFirstTermHours;
+		this.nSecondTermHours = nSecondTermHours;
     }
 	
 	function loadPossibleSchedules() {
@@ -39,6 +43,8 @@ var UI = (function($) {
 			var nSumStartTimes = 0;
 			var nSumEndTimes = 0;
 			var iMeetings = 0;
+			var nFirstTermHours = 0;
+			var nSecondTermHours = 0;
 			var aFirstTermCourses = [];
 			var aSecondTermCourses = [];
 			var sFirstTermCourses = "";
@@ -67,6 +73,9 @@ var UI = (function($) {
 					
 					nSumStartTimes += parseFloat(oMeeting.nStartTime);
 					nSumEndTimes += parseFloat(oMeeting.nEndTime);
+					
+					if(sSection.sTerm == "1" || sSection.sTerm == "1-2") nFirstTermHours += (parseFloat(oMeeting.nEndTime) - parseFloat(oMeeting.nStartTime));
+					if(sSection.sTerm == "2" || sSection.sTerm == "1-2") nSecondTermHours += (parseFloat(oMeeting.nEndTime) - parseFloat(oMeeting.nStartTime));
 				}
 			}
 			
@@ -87,13 +96,29 @@ var UI = (function($) {
 			sFirstTermCourses = sFirstTermCourses.substr(0, sFirstTermCourses.length - 2).replace(/-/g, ' ');
 			sSecondTermCourses = sSecondTermCourses.substr(0, sSecondTermCourses.length - 2).replace(/-/g, " ");
 			
-			var sSchedule = new Schedule(i, nSumStartTimes / iMeetings, nSumEndTimes / iMeetings, sFirstTermCourses, sSecondTermCourses);
+			var sSchedule = new Schedule(i, nSumStartTimes / iMeetings, nSumEndTimes / iMeetings, sFirstTermCourses, sSecondTermCourses, nFirstTermHours, nSecondTermHours);
 			aSortedSchedules.push(sSchedule);
 		}
 	}
 	
 	function sortSchedules() {
-		aSortedSchedules.sort(sortSchedules_byShortestDay);
+		aSortedSchedules.sort(sortSchedules_byMostBalanced);
+	}
+	
+	function sortSchedules_byMostBalanced(sSchedule1, sSchedule2) {
+		var nDiff1 = Math.abs(sSchedule1.nFirstTermHours - sSchedule2.nSecondTermHours);
+		var nDiff2 = Math.abs(sSchedule2.nFirstTermHours - sSchedule2.nSecondTermHours);
+		
+		return nDiff1 - nDiff2;
+	}
+	
+	function sortSchedules_bySmartSort(sSchedule1, sSchedule2) {
+		var nMostBalanced = sortSchedules_byMostBalanced(sSchedule1, sSchedule2);
+		
+		if(nMostBalanced == 0) {
+			// Both are equally balanced, go by shortest day
+			return sortSchedules_byShortestDay(sSchedule1, sSchedule2);
+		} else return nMostBalanced;
 	}
 	
 	function sortSchedules_byLatestStartTime(sSchedule1, sSchedule2) {
@@ -114,12 +139,25 @@ var UI = (function($) {
 	function displaySchedules() {
 		clearSchedules();
 		
-		for(var i = 0; i < aSortedSchedules.length; i++) {
+		displayNextSchedules(10);
+	}
+	
+	function displayNextSchedules(iSchedulesToShow) {
+		var iCurrentIndex = iShowingSchedules;
+		var iLastIndex = iShowingSchedules += iSchedulesToShow;
+		
+		if(iLastIndex >= aSortedSchedules.length) iLastIndex = aSortedSchedules.length;
+		
+		for(var i = iCurrentIndex; i < iLastIndex; i++) {
 			var sSchedule = aSortedSchedules[i];
 			
 			addScheduleRowToList(sSchedule.iID, (i + 1), convertDecimalTimeToString(sSchedule.nAverageStartTime), convertDecimalTimeToString(sSchedule.nAverageEndTime),
 								sSchedule.sFirstTermCourses, sSchedule.sSecondTermCourses);
 		}
+		
+		iShowingSchedules = iLastIndex;
+		
+		updateShowMoreText();
 	}
 	
 	function addScheduleRowToList(iScheduleID, iOrder, sAverageStartTime, sAverageEndTime, sFirstTermCourses, sSecondTermCourses) {
@@ -211,6 +249,14 @@ var UI = (function($) {
     	}, 1000);
 	}
 	
+	function showMoreSchedules() {
+		displayNextSchedules(10);
+	}
+	
+	function updateShowMoreText() {
+		$("#show-more td").text("Showing Top "+iShowingSchedules+" of "+addCommas(aPossibleSchedules.length)+". Click to View 10 More");
+	}
+	
 	/**
 	 * Converts a time given as a number (eg. 14.5) into a formatted 24-hour time string (eg. 14:30)
 	 *
@@ -247,5 +293,23 @@ var UI = (function($) {
             $(this).css("height", nHeight + "px");
         });
 	}
+    
+    /**
+     * Adds commas to the given number and returns it as a string.
+     *
+     * @param nStr The number to format
+     * @return     A string with the formatted number
+     */
+    function addCommas(nStr) {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
     
 })(jQuery);

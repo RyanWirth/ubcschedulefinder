@@ -43,7 +43,7 @@ var UI = (function ($) {
         if(!bSchedulesGenerated) displayFooterMessage("Click to Find Schedules", false);
 		else {
 			updateFindSchedulesStatus(1, -1);
-			if(!bCoursesModified) displayFooterMessage("Found " + iSchedulesGenerated + " Schedules, Click to View", true);
+			if(!bCoursesModified) displayFooterMessage("Found " + addCommas(iSchedulesGenerated) + " Schedules, Click to View", true);
 			else displayFooterMessage("Courses Modified, Click to Find Schedules", true);
 		}
     }
@@ -562,8 +562,9 @@ var UI = (function ($) {
      */
     function updateFindSchedulesStatus(nProgress, iNewSchedules) {
         var sProgress = Math.floor(nProgress * 1000) / 10; // Floor to a tenth of a percent
+		var bHasNoDecimal = (sProgress - Math.floor(sProgress)) == 0;
         $(".ui-footer-progress-bar span").css("width", (nProgress * 100) + "%");
-        $(".ui-footer-progress-bar-status").text(sProgress + "%");
+        $(".ui-footer-progress-bar-status").text(sProgress + (bHasNoDecimal ? ".0" : "") + "%");
         
 		if(iNewSchedules >= 0) iSchedulesGenerated = iNewSchedules;
         

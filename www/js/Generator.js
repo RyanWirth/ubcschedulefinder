@@ -70,7 +70,7 @@ var Generator = (function () {
         console.log("[Generator] Thread killed. Starting timer...");
 
 		if(iCheckedPossibilities >= iTotalPossibilities) stopThread();
-        else setTimeout(startThread, 100);
+        else setTimeout(startThread, 10);
     }
 	
 	function stopThread() {
@@ -140,7 +140,7 @@ var Generator = (function () {
         for (var i = aCurrentIndices[iCourseID][iSectionID]; i < aSections.length; i++) {
             var sSection = aSections[i];
             aCurrentIndices[iCourseID][iSectionID] = i; // Save the current array
-            if(iCheckedPossibilities - iCheckedPossibilitiesAtLastKill > 100) {
+            if(iCheckedPossibilities - iCheckedPossibilitiesAtLastKill > 1000) {
                 bKillThread = true;
                 return;
             }

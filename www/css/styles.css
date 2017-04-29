@@ -392,6 +392,7 @@ div.ui-schedule {
     color:#212121;
     height:auto;
     padding-bottom:80px;
+    cursor:default;
 }
 
 div.ui-schedule div.ui-schedule-timeline {
@@ -539,6 +540,10 @@ div.ui-footer div.ui-footer-progress-bar div.ui-footer-start-generation {
     line-height: 40px;
     position: absolute;
     text-transform: uppercase;
+}
+
+div.ui-footer div.ui-footer-progress-bar div.ui-footer-finished-generation {
+    color:#388E3C !important;
 }
 
 div.ui-footer div.ui-footer-progress-bar div.ui-footer-start-generation:hover {

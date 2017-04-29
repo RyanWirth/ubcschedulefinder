@@ -1,6 +1,6 @@
 var UBCCalendarAPI = (function ($, dDate) {
     var sBaseURL = "https://www.ryanwirth.ca/misc/ubcschedulefinder/proxy.php?";
-    var nSessionYear = 2016; //dDate.getFullYear();
+    var nSessionYear = 2017; //dDate.getFullYear();
     var sSessionCode = "W";
 
     // Caching

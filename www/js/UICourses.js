@@ -1,5 +1,8 @@
 var UI = (function ($) {
     var aCourses = [];
+    var bSchedulesGenerated = false;
+    var bCoursesModified = false;
+    var iSchedulesGenerated = 0;
     var scCurrentCourse = null;
 
     $(function () {
@@ -21,9 +24,43 @@ var UI = (function ($) {
         
         $(".ui-footer-start-generation").click(findSchedules);
         
+        // Configure the Find Schedules button
+        refreshGenerationState();
+        
         // Load in all the past courses
         loadCourses();
     });
+    
+    /**
+     * Retrieves the generation status variables from localStorage and updates the footer button
+     */
+    function refreshGenerationState() {
+        bSchedulesGenerated = localStorage.getItem("bSchedulesGenerated") != null ? (localStorage.getItem("bSchedulesGenerated") == "false" ? false : true) : false;
+        bCoursesModified = localStorage.getItem("bCoursesModified") != null ? (localStorage.getItem("bCoursesModified") == "false" ? false : true) : false;
+        iSchedulesGenerated = localStorage.getItem("iSchedulesGenerated") != null ? parseInt(localStorage.getItem("iSchedulesGenerated")) : 0;
+        
+        if(!bSchedulesGenerated) displayFooterMessage("Click to Find Schedules", false);
+		else {
+			updateFindSchedulesStatus(1, -1);
+			if(!bCoursesModified) displayFooterMessage("Found " + iSchedulesGenerated + " Schedules, Click to View", true);
+			else displayFooterMessage("Courses Modified, Click to Find Schedules", true);
+		}
+    }
+    
+    /**
+     * Saves the generation status variables to localStorage and refreshes the generation state.
+     */
+    function saveGenerationState(bSchedulesGenerated_t, bCoursesModified_t, iSchedulesGenerated_t) {
+        bSchedulesGenerated = bSchedulesGenerated_t;
+        bCoursesModified = bCoursesModified_t;
+        iSchedulesGenerated = iSchedulesGenerated_t;
+        
+        localStorage.setItem("bSchedulesGenerated", bSchedulesGenerated);
+        localStorage.setItem("bCoursesModified", bCoursesModified);
+        localStorage.setItem("iSchedulesGenerated", iSchedulesGenerated);
+        
+        refreshGenerationState();
+    }
     
     /**
      * Loads the list of courses (if they exist) from localStorage.
@@ -124,6 +161,9 @@ var UI = (function ($) {
         
         // If this isn't a complete course ID, i=gnore it (ie. the user clicked on a department result, not a course result)
         if (aStringData.length != 2) return;
+		
+		// Indicate that the course list has changed
+		saveGenerationState(bSchedulesGenerated, true, iSchedulesGenerated);
         
         requestAddCourseToList(aStringData[0] + "-" + aStringData[1]);
 
@@ -198,6 +238,9 @@ var UI = (function ($) {
             if(index % 2 == 1) $(this).addClass("odd");
             else $(this).removeClass("odd");
         });
+		
+		// Indicate the course list has changed
+		saveGenerationState(bSchedulesGenerated, true, iSchedulesGenerated);
         
         // Update the counter in the footer
         updateTotalPossibilities();
@@ -249,6 +292,15 @@ var UI = (function ($) {
             iPossibilitiesTerm1 *= (iTerm1 > 0 ? iTerm1 : 1);
             iPossibilitiesTerm2 *= (iTerm2 > 0 ? iTerm2 : 1);
             iPossibilitiesTerm1_2 *= (iTerm1_2 > 0 ? iTerm1_2 : 1);
+			
+			if(iTerm1_2 == 0 && iTerm1 == 0 && iTerm2 != 0) {
+				// This activity type has sections in term 2 but not term 1
+				iPossibilitiesTerm1 = 0;
+			} else
+			if(iTerm1_2 == 0 && iTerm1 != 0 && iTerm2 == 0) {
+				// Ditto, but for term 2
+				iPossibilitiesTerm2 = 0;
+			}
 
             if (iTerm1 > 0 || iTerm2 > 0 || iTerm1_2 > 0) {
                 // Format the section types descriptor
@@ -459,11 +511,53 @@ var UI = (function ($) {
      * Starts Scheduler.js's generation module using the current set of courses currently in the table.
      */
     function findSchedules() {
+		if(bSchedulesGenerated && !bCoursesModified) {
+			// We've already generated schedules and we haven't changed the course list yet
+			window.location.href = "schedules.html";
+			return;
+		}
+		
         // Create an array of only course IDs to pass to the generator.
         var aCourseIDs = [];
         for(var i = 0; i < aCourses.length; i++) aCourseIDs.push(aCourses[i].sCourseID);
         
-        Generator.startGenerating(aCourseIDs);
+		updateFindSchedulesStatus(0, 0);
+        Generator.startGenerating(aCourseIDs, updateFindSchedulesStatus);
+        
+        $(".ui-footer-start-generation").css("visibility", "hidden");
+    }
+    
+    /**
+     * Updates the progress bar at the bottom of the screen with the given progress percentage.
+     *
+     * @param nProgress     The completion percentage (0 <= nProgress <= 1)
+     * @param iNewSchedules The number of schedules found so far
+     */
+    function updateFindSchedulesStatus(nProgress, iNewSchedules) {
+        var sProgress = Math.floor(nProgress * 1000) / 10; // Floor to a tenth of a percent
+        $(".ui-footer-progress-bar span").css("width", (nProgress * 100) + "%");
+        $(".ui-footer-progress-bar-status").text(sProgress + "%");
+        
+		if(iNewSchedules >= 0) iSchedulesGenerated = iNewSchedules;
+        
+        if(nProgress == 1 && iNewSchedules >= 0) {
+            // We're done.
+            saveGenerationState(true, false, iSchedulesGenerated);
+        }
+    }
+    
+    /**
+     * Shows a message in the "Generation Bar" at the bottom of the screen.
+     *
+     * @param sText      The message to be displayed
+     * @param bHighlight True if the text should be green, false if grey
+     */
+    function displayFooterMessage(sText, bHighlight) {
+        $(".ui-footer-start-generation").text(sText);
+        $(".ui-footer-start-generation").css("visibility", "visible");
+        
+        if(bHighlight) $(".ui-footer-start-generation").addClass("ui-footer-finished-generation");
+        else $(".ui-footer-start-generation").removeClass("ui-footer-finished-generation");
     }
     
     /**

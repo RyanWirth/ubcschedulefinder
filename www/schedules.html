@@ -50,8 +50,8 @@
                     <i class="material-icons md-36">schedule</i> UBC Schedule Finder</div>
             </div>
             <div class="ui-header-right">
-                <div class="ui-header-button">COURSES</div>
-                <div class="ui-header-button ui-header-button-active">VIEW SCHEDULES</div>
+                <a href="index.html"><div class="ui-header-button">COURSES</div></a>
+                <a href="schedules.html"><div class="ui-header-button ui-header-button-active">VIEW SCHEDULES</div></a>
             </div>
         </div>
 
@@ -78,7 +78,7 @@
                     </thead>
 
                     <tbody>
-                        <tr>
+                        <tr class="selected">
                             <td>1</td>
                             <td>09:45</td>
                             <td>15:32</td>
@@ -86,6 +86,16 @@
                             <td>CPSC 121, MATH 101, PHYS 101</td>
                         </tr>
                     </tbody>
+                    
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>Total:</td>
+                            <td id="total">1</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <div class="ui-divider"></div>

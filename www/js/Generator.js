@@ -3,6 +3,11 @@ var Generator = (function () {
     var aPossibleSchedules = []; // An array containing arrays of possible schedules
     var aCurrentSchedule = []; // An array containing the current schedule being built (arrays within are by course)
     var aCurrentIndices = [];
+    
+    var fUpdateStatusCallback = null;
+    var iTotalPossibilities = 0;
+    var iCheckedPossibilities = 0;
+    var iCheckedPossibilitiesAtLastKill = 0;
 
     var bKillThread = false;
    // var stSortType = SortType.SHORTEST_DAY;
@@ -27,22 +32,36 @@ var Generator = (function () {
     /**
      * Begins generating schedules given an array of course IDs.
      *
-     * @param _aCourseIDs An array of course IDs to generate schedules from
+     * @param _aCourseIDs            An array of course IDs to generate schedules from
+     * @param _fUpdateStatusCallback The callback to pass the completion percentage to (one number as arg)
      */
-    function startGenerating(_aCourseIDs) {
+    function startGenerating(_aCourseIDs, _fUpdateStatusCallback) {
         aCourseIDs = _aCourseIDs;
+        fUpdateStatusCallback = _fUpdateStatusCallback;
         
         // Empty the current indices and schedule array
         aCurrentIndices = [];
         aCurrentSchedule = [];
+        
+        // Empty the possible schedules array
+        aPossibleSchedules = [];
 
-        // Find the total number of schedules
+        // Find the total number of schedules and initialize the current schedule/indices arrays
+        iTotalPossibilities = 1;
         for (var i = 0; i < aCourseIDs.length; i++) {
-            //iTotalSchedules *= UBCCalendarAPI.getCourseSections(aCourseIDs[i]).length;
-            aCurrentIndices.push(0); // Initialize this index to 0
+            var scSectionContainer = UBCCalendarAPI.getSectionContainer(aCourseIDs[i]);
+            
+            var aCourseIndices = [];
+            for(var j = 0; j < scSectionContainer.aSections.length; j++) {
+                iTotalPossibilities *= scSectionContainer.aSections[j].length;
+                aCourseIndices.push(0);
+            }
+            
+            aCurrentIndices.push(aCourseIndices);
             aCurrentSchedule.push([]);
         }
         
+        console.log("[Generator] Found total: " + iTotalPossibilities);
         console.log("[Generator] Using courses: " + aCourseIDs);
 
         startThread();
@@ -50,6 +69,7 @@ var Generator = (function () {
 
     function startThread() {
         bKillThread = false;
+        iCheckedPossibilitiesAtLastKill = iCheckedPossibilities;
 
         console.log("[Generator] Starting thread.");
 
@@ -57,8 +77,13 @@ var Generator = (function () {
 
         console.log("[Generator] Thread killed. Starting timer...");
 
-        //setTimeout(startThread, 1000);
+		if(iCheckedPossibilities >= iTotalPossibilities) stopThread();
+        else setTimeout(startThread, 100);
     }
+	
+	function stopThread() {
+		console.log("[Generator] Stopped thread.");
+	}
 
     function scheduleCourse(iCourseID) {
         if (iCourseID >= aCourseIDs.length) {
@@ -74,6 +99,8 @@ var Generator = (function () {
                 }
 
             console.log("[Generator] Found schedule: " + sPossibleSchedule);
+            
+            checkPossibilities(1);
 
             // Add the copied array to the array of all possible ones, then return and continue.
             aPossibleSchedules.push(aPossibleSchedule);
@@ -97,18 +124,35 @@ var Generator = (function () {
         // We still have sections types left to schedule
         var bSectionSelected = false;
         var aSections = scSectionContainer.aSections[iSectionID];
-        for (var i = 0; i < aSections.length; i++) {
+        for (var i = aCurrentIndices[iCourseID][iSectionID]; i < aSections.length; i++) {
             var sSection = aSections[i];
+            aCurrentIndices[iCourseID][iSectionID] = i; // Save the current array
+            if(iCheckedPossibilities - iCheckedPossibilitiesAtLastKill > 100) {
+                bKillThread = true;
+                return;
+            }
             
             console.log("[Generator] Iterating over " + sSection.sKey);
 
             // Check for selection and conflicts
-            if (sSection.bSelected == false) continue;
+            if (sSection.bSelected == false) {
+                calculateSkippedPossibilities(iCourseID, iSectionID);
+                continue;
+            }
             
-            // This section is selected, so set the flag to not skip this section
+            // This section is selected, so set the flag to not ignore this section
             bSectionSelected = true;
             
-            if (doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID)) continue;
+            // If another section type of this course has already been scheduled, make sure it matches
+            if((iSectionID > 0) && (aCurrentSchedule[iCourseID][0] == null || !doTermsOverlap(sSection.sTerm, aCurrentSchedule[iCourseID][0].sTerm))) {
+                calculateSkippedPossibilities(iCourseID, iSectionID);
+                continue;
+            }
+            
+            if (doesSectionConflictWithCurrentSchedule(sSection, iCourseID, iSectionID)) {
+                calculateSkippedPossibilities(iCourseID, iSectionID);
+                continue;
+            }
 
             // No conflict, add it and let's check the next one
             if (aCurrentSchedule[iCourseID].length <= iSectionID) aCurrentSchedule[iCourseID].push(sSection);
@@ -116,6 +160,8 @@ var Generator = (function () {
 
             // Recurse, adding the next set of section types for the current course ID
             scheduleCourseSections(iCourseID, iSectionID + 1);
+            
+            if(bKillThread) return;
         }
         
         if(!bSectionSelected)
@@ -212,6 +258,64 @@ var Generator = (function () {
      */
     function doTimesConflict(nStart1, nEnd1, nStart2, nEnd2) {
         return (nStart1 < nEnd2) && (nEnd1 > nStart2);
+    }
+    
+    /**
+     * Increases the number of checked possibilities and propagates the update to fUpdateStatusCallback.
+     *
+     * @param iPossibilities The number of possibilities just checked.
+     */
+    function checkPossibilities(iPossibilities)
+    {
+        iCheckedPossibilities += iPossibilities;
+        if(iCheckedPossibilities > iTotalPossibilities) iCheckedPossibilities = iTotalPossibilities;
+        
+        console.log("[Generator] Checked " + iCheckedPossibilities + " of " + iTotalPossibilities + " - " + aPossibleSchedules.length);
+        
+		// Calculate the percentage completed and cap it at 100%
+		var nProgress = iCheckedPossibilities / iTotalPossibilities;
+		if(nProgress >= 1) nProgress = 1;
+		
+        if(fUpdateStatusCallback != null) fUpdateStatusCallback(nProgress, aPossibleSchedules.length);
+    }
+    
+    /**
+     * Determines the number of possibilities after the given position and increments the possibilities
+     * counter.
+     *
+     * @param iCourseID  The current course ID
+     * @param iSectionID The current section ID within the course
+     */
+    function calculateSkippedPossibilities(iCourseID, iSectionID) {
+        var iSkippedPossibilities = 1;
+        var scSectionContainer;
+        var i;
+        
+        for(i = iCourseID + 1; i < aCourseIDs.length; i++) {
+            scSectionContainer = UBCCalendarAPI.getSectionContainer(aCourseIDs[i]);
+            for(var j = 0; j < scSectionContainer.aSections.length; j++) iSkippedPossibilities *= scSectionContainer.aSections[j].length;
+        }
+        
+        scSectionContainer = UBCCalendarAPI.getSectionContainer(aCourseIDs[iCourseID]);
+        for(i = iSectionID + 1; i < scSectionContainer.aSections.length; i++) iSkippedPossibilities *= scSectionContainer.aSections[i].length;
+        
+        checkPossibilities(iSkippedPossibilities);
+    }
+    
+    /**
+     * Sets all saved indexes past the current position to 0, resetting them.
+     *
+     * @param iCourseID  The current course ID
+     * @param iSectionID The current section ID within the course
+     */
+    function zeroFillIndices(iCourseID, iSectionID) {
+        var i;
+        
+        for(i = iCourseID + 1; i < aCurrentIndices.length; i++) {
+            for(var j = 0; j < aCurrentIndices[i].length; j++) aCurrentIndices[i][j] = 0;
+        }
+        
+        for(i = iSectionID + 1; i < aCurrentIndices[iCourseID].length; i++) aCurrentIndices[iCourseID][i] = 0;
     }
 
     return {

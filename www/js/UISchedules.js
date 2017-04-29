@@ -20,6 +20,14 @@ var UI = (function($) {
 	
 	/**
 	 * For sorting schedules while retaining their ID so they may be looked up from aPossibleSchedules.
+	 *
+	 * @param iID                The index of this schedule in aPossibleSchedules
+	 * @param nAverageStartTime  The average start time as a decimal
+	 * @param nAverageEndTime    The average end time as a decimal
+	 * @param sFirstTermCourses  The first term sections grouped by course
+	 * @param sSecondTermCourses The second term sections grouped by course
+	 * @param nFirstTermHours    The number of class hours in first term
+	 * @param nSecondTermHours   The number of class hours in second term
 	 */
 	function Schedule(iID, nAverageStartTime, nAverageEndTime, sFirstTermCourses, sSecondTermCourses, nFirstTermHours, nSecondTermHours) {
         this.iID = iID;
@@ -31,6 +39,9 @@ var UI = (function($) {
 		this.nSecondTermHours = nSecondTermHours;
     }
 	
+	/**
+	 * Parses the generated schedules data by retrieving section info and stores the data in the sorted array, ready for sorting.
+	 */
 	function loadPossibleSchedules() {
 		aPossibleSchedules = localStorage.getItem("aPossibleSchedules") != null ? JSON.parse(localStorage.getItem("aPossibleSchedules")) : [];
 		
@@ -101,10 +112,16 @@ var UI = (function($) {
 		}
 	}
 	
+	/**
+	 * Sorts the schedules based on a particular sorting function.
+	 */
 	function sortSchedules() {
 		aSortedSchedules.sort(sortSchedules_byMostBalanced);
 	}
 	
+	/**
+	 * Sorts schedules based on the distribution of their class hours - more even is better.
+	 */
 	function sortSchedules_byMostBalanced(sSchedule1, sSchedule2) {
 		var nDiff1 = Math.abs(sSchedule1.nFirstTermHours - sSchedule2.nSecondTermHours);
 		var nDiff2 = Math.abs(sSchedule2.nFirstTermHours - sSchedule2.nSecondTermHours);
@@ -112,6 +129,9 @@ var UI = (function($) {
 		return nDiff1 - nDiff2;
 	}
 	
+	/**
+	 * Sorts schedules based on their balance first, then by shortest day.
+	 */
 	function sortSchedules_bySmartSort(sSchedule1, sSchedule2) {
 		var nMostBalanced = sortSchedules_byMostBalanced(sSchedule1, sSchedule2);
 		
@@ -121,14 +141,23 @@ var UI = (function($) {
 		} else return nMostBalanced;
 	}
 	
+	/**
+	 * Sorts schedules based on the latest average start time.
+	 */
 	function sortSchedules_byLatestStartTime(sSchedule1, sSchedule2) {
 		return sSchedule2.nAverageStartTime - sSchedule1.nAverageStartTime;
 	}
 	
+	/**
+	 * Sorts schedules based on their earliest average end time.
+	 */
 	function sortSchedules_byEarliestEndTime(sSchedule1, sSchedule2) {
 		return sSchedule1.nAverageEndTime - sSchedule2.nAverageEndTime;
 	}
 	
+	/**
+	 * Sorts schedules based on the length of their day.
+	 */
 	function sortSchedules_byShortestDay(sSchedule1, sSchedule2) {
 		var nLength1 = sSchedule1.nAverageEndTime - sSchedule1.nAverageStartTime;
 		var nLength2 = sSchedule2.nAverageEndTime - sSchedule2.nAverageStartTime;
@@ -136,12 +165,18 @@ var UI = (function($) {
 		return nLength2 - nLength1;
 	}
 	
+	/**
+	 * Clears the schedule list and displays the top 10.
+	 */
 	function displaySchedules() {
 		clearSchedules();
 		
 		displayNextSchedules(10);
 	}
 	
+	/**
+	 * Reveals the next top schedules by displaying them in the list.
+	 */
 	function displayNextSchedules(iSchedulesToShow) {
 		var iCurrentIndex = iShowingSchedules;
 		var iLastIndex = iShowingSchedules += iSchedulesToShow;
@@ -160,6 +195,15 @@ var UI = (function($) {
 		updateShowMoreText();
 	}
 	
+	/**
+	 * Displays a schedule in the list.
+	 *
+	 * @param iScheduleID        The index of the schedule in aPossibleSchedules
+	 * @param sAverageStartTime  The average start time as a 24-hour time string
+	 * @param sAverageEndTime    The average end time as a 24-hour time string
+	 * @param sFirstTermCourses  The sections in first term grouped by course
+	 * @param sSecondTermCourses The sections in second term grouped by course
+	 */
 	function addScheduleRowToList(iScheduleID, iOrder, sAverageStartTime, sAverageEndTime, sFirstTermCourses, sSecondTermCourses) {
 		$("#schedule-list tbody").append('<tr id="schedule-row-' + iScheduleID + '"' + (iOrder % 2 == 1 ? ' class="odd"' : '') + '>\
 											<td>' + iOrder        + '</td>\
@@ -170,10 +214,18 @@ var UI = (function($) {
 										 </tr>');
 	}
 	
+	/**
+	 * Empties the schedule list.
+	 */
 	function clearSchedules() {
 		$("#schedule-list tbody").empty();
 	}
 	
+	/**
+	 * Displays the given schedule's timetable.
+	 *
+	 * @param The ID of the schedule to display in aPossibleSchedules
+	 */
 	function displaySchedule(iScheduleID) {
 		// Deselect the previous schedule
 		$("#schedule-row-" + iCurrentScheduleID).removeClass("selected");
@@ -210,6 +262,9 @@ var UI = (function($) {
 		realignScheduleItems();
 	}
 	
+	/**
+	 * Empties all of the timetable day sections.
+	 */
 	function clearScheduleSections() {
 		clearScheduleDay("mon");
 		clearScheduleDay("tue");
@@ -218,16 +273,43 @@ var UI = (function($) {
 		clearScheduleDay("fri");
 	}
 	
+	/**
+	 * Empties a particular timetable day section.
+	 *
+	 * @param sDay The day to empty
+	 */ 
 	function clearScheduleDay(sDay) {
 		$("#term-1 #list-" + sDay).empty();
 		$("#term-2 #list-" + sDay).empty();
 	}
 	
+	/**
+	 * Adds a meeting to a particular timetable day section.
+	 *
+	 * @param sTerm      The meeting's term
+	 * @param sDay       The meeting's day
+	 * @param sCourseID  The course ID of the meeting
+	 * @param sKey       The course key of the meeting
+	 * @param sRoom      The building code and room number_format
+	 * @param sStartTime The starting time as a 24-hour time string
+	 * @param sEndTime   The ending time as a 24-hour time string
+	 */
 	function addMeetingToDay(sTerm, sDay, sCourseID, sKey, sRoom, sStartTime, sEndTime) {
 		if(sTerm == "1" || sTerm == "1-2") addMeetingToDay_forTerm(1, sDay, sCourseID, sKey, sRoom, sStartTime, sEndTime);
 		if(sTerm == "2" || sTerm == "1-2") addMeetingToDay_forTerm(2, sDay, sCourseID, sKey, sRoom, sStartTime, sEndTime);
 	}
 	
+	/**
+	 * Adds a meeting to a particular timetable day section given a term.
+	 *
+	 * @param sTerm      The meeting's term
+	 * @param sDay       The meeting's day
+	 * @param sCourseID  The course ID of the meeting
+	 * @param sKey       The course key of the meeting
+	 * @param sRoom      The building code and room number_format
+	 * @param sStartTime The starting time as a 24-hour time string
+	 * @param sEndTime   The ending time as a 24-hour time string
+	 */
 	function addMeetingToDay_forTerm(iTerm, sDay, sCourseID, sKey, sRoom, sStartTime, sEndTime) {
 		$("#term-" + iTerm + " #list-" + sDay).append('<li data-start="' + sStartTime + '" data-end="' + sEndTime + '">\
                                 		<div class="contents">\
@@ -237,6 +319,9 @@ var UI = (function($) {
                             		</li>');
 	}
 	
+	/**
+	 * Called when a schedule is clicked on in the list. Displays the schedule and scrolls down to the timetable.
+	 */
 	function showSchedule() {
 		var sRowID = $(this).attr("id");
 		var iScheduleID = parseInt(sRowID.replace("schedule-row-", ""));
@@ -249,10 +334,16 @@ var UI = (function($) {
     	}, 1000);
 	}
 	
+	/**
+	 * Called when the View More button is clicked on in the list. Displays the next 10 schedules.
+	 */
 	function showMoreSchedules() {
 		displayNextSchedules(10);
 	}
 	
+	/**
+	 * Updates the View More button's text.
+	 */
 	function updateShowMoreText() {
 		$("#show-more td").text("Showing Top "+iShowingSchedules+" of "+addCommas(aPossibleSchedules.length)+". Click to View 10 More");
 	}
@@ -271,11 +362,19 @@ var UI = (function($) {
 		return sTime;
 	}
     
+	/**
+	 * Positions the meetings in the first and second term timetable.
+	 */
     function realignScheduleItems() {
 		realignScheduleItems_forTerm(1);
 		realignScheduleItems_forTerm(2);
     }
 	
+	/**
+	 * Positions the meetings of a particular term's timetable.
+	 *
+	 * @param iTerm The term number to reposition
+	 */
 	function realignScheduleItems_forTerm(iTerm) {
         $("#term-"+iTerm+" div.ui-schedule-events li").each(function() {
             var aStartTime = $(this).data("start").split(":");

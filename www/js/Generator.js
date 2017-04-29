@@ -53,8 +53,8 @@ var Generator = (function () {
             aCurrentSchedule.push([]);
         }
         
-        console.log("[Generator] Found total: " + iTotalPossibilities);
-        console.log("[Generator] Using courses: " + aCourseIDs);
+        //console.log("[Generator] Found total: " + iTotalPossibilities);
+        //console.log("[Generator] Using courses: " + aCourseIDs);
 
         startThread();
     }
@@ -63,18 +63,20 @@ var Generator = (function () {
         bKillThread = false;
         iCheckedPossibilitiesAtLastKill = iCheckedPossibilities;
 
-        console.log("[Generator] Starting thread.");
+        //console.log("[Generator] Starting thread.");
 
         scheduleCourse(0);
 
-        console.log("[Generator] Thread killed. Starting timer...");
+        //console.log("[Generator] Thread killed. Starting timer...");
 
 		if(iCheckedPossibilities >= iTotalPossibilities) stopThread();
-        else setTimeout(startThread, 10);
+        else setTimeout(startThread, 100);
     }
 	
 	function stopThread() {
-		console.log("[Generator] Stopped thread.");
+		//console.log("[Generator] Stopped thread.");
+		
+		fUpdateStatusCallback(1, aPossibleSchedules.length);
 	}
 	
 	/**
@@ -103,7 +105,7 @@ var Generator = (function () {
                     sPossibleSchedule += aCurrentSchedule[i][j].sCourseID + "-" + aCurrentSchedule[i][j].sKey + " (" + aCurrentSchedule[i][j].sActivity + "), ";
                 }
 
-            console.log("[Generator] Found schedule: " + sPossibleSchedule);
+            //console.log("[Generator] Found schedule: " + sPossibleSchedule);
             
             checkPossibilities(1);
 
@@ -132,7 +134,7 @@ var Generator = (function () {
             return;
         }
 		
-        console.log("[Generator] Scheduling section " + iCourseID + "-" + iSectionID + ": " + aCourseIDs[iCourseID]);
+        //console.log("[Generator] Scheduling section " + iCourseID + "-" + iSectionID + ": " + aCourseIDs[iCourseID]);
 
         // We still have sections types left to schedule
         var bSectionSelected = aCurrentIndices[iCourseID][iSectionID][1];
@@ -145,7 +147,7 @@ var Generator = (function () {
                 return;
             }
             
-            console.log("[Generator] Iterating over " + sSection.sKey);
+            //console.log("[Generator] Iterating over " + sSection.sKey);
 
             // Check for selection and conflicts
             if (sSection.bSelected == false) {
@@ -172,7 +174,7 @@ var Generator = (function () {
             if (aCurrentSchedule[iCourseID].length <= iSectionID) aCurrentSchedule[iCourseID].push(sSection);
             else aCurrentSchedule[iCourseID][iSectionID] = sSection;
 			
-			console.log("[Generator] Adding " + sSection.sKey);
+			//console.log("[Generator] Adding " + sSection.sKey);
 
             // Recurse, adding the next set of section types for the current course ID
             scheduleCourseSections(iCourseID, iSectionID + 1);
